@@ -1,0 +1,51 @@
+# ===== ChemAI 智辅化学 — 后端依赖 =====
+# 目标运行时：设计文档 37 为 Python 3.11（Dockerfile: python:3.11-slim）。
+# 本机仅有 Python 3.13，故改用"最低版本下限 + 主版本上限"写法，让 pip 解析出与 3.13
+# 兼容的 wheel（文档 37 的精确钉版因缺 cp313 wheel 会构建失败）。
+# 环境确认后可执行 `pip freeze > requirements.lock.txt` 冻结精确版本。
+#
+# 未纳入本文件的重型/可选依赖（在对应阶段单独安装）：
+#   - OCR：paddleocr / paddlepaddle、MinerU（阶段 49）
+#   - 化学：rdkit（阶段 46）
+#   - 浏览器工具：playwright（阶段 56/57）
+
+# --- Web 框架 ---
+fastapi>=0.109.2,<1.0
+uvicorn>=0.27.1,<1.0
+python-multipart>=0.0.9
+
+# --- 数据 / ORM / 迁移 ---
+sqlalchemy>=2.0.25,<2.1
+alembic>=1.13.1,<2.0
+pydantic>=2.6.1,<3.0
+pydantic-settings>=2.1.0,<3.0
+
+# --- 认证 ---
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+
+# --- 向量库 ---
+chromadb>=0.4.22
+
+# --- Agent ---
+langgraph>=0.2.0
+
+# --- LLM Provider ---
+dashscope>=1.17.0
+openai>=1.12.0
+
+# --- 调度 ---
+apscheduler>=3.10.4,<4.0
+
+# --- HTTP ---
+httpx>=0.26.0
+requests>=2.31.0
+
+# --- 工具 ---
+python-dotenv>=1.0.1
+PyYAML>=6.0.1
+jinja2>=3.1.3
+
+# --- 测试 ---
+pytest>=8.0.0
+pytest-asyncio>=0.23.5

@@ -1,0 +1,39 @@
+name: CI
+
+# ChemAI 智辅化学 — 持续集成
+# 说明：项目当前尚无代码，各步骤带存在性守卫（不会造成红灯）；随阶段 43+ 代码落地自动生效。
+#       阶段 52 在此接入 run_evals（L1/L2/L3 三层评测 + 基线对比）。
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend:
+    name: Backend tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          else
+            echo "requirements.txt 未创建，跳过依赖安装"
+          fi
+
+      - name: Run tests
+        run: |
+          if [ -n "$(find backend/tests -name 'test_*.py' -print -quit)" ]; then
+            pytest backend/tests --tb=short -q
+          else
+            echo "尚无测试，跳过"
+          fi

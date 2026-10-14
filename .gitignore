@@ -1,0 +1,72 @@
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+.eggs/
+dist/
+build/
+venv/
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# ===== 数据库（SQLite 主库为运行时产物）=====
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite3
+*.sqlite3-journal
+
+# ===== ChromaDB / 向量库（运行时）=====
+# 实际目录为 data/chroma/；文档 42 写作 data/chromadb/，两者都排除
+data/chroma/
+data/chromadb/
+
+# ===== 环境变量 / 密钥（禁止入库）=====
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# ===== IDE =====
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+
+# ===== 临时文件 / 日志 =====
+*.log
+*.tmp
+.cache/
+
+# ===== Node / 前端 =====
+node_modules/
+frontend/**/dist/
+frontend/**/build/
+
+# ===== 桌面打包（PyInstaller）=====
+desktop/dist/
+desktop/build/
+*.spec
+
+# ===== 运行时数据（保留目录、忽略内容）=====
+data/audit/*
+!data/audit/.gitkeep
+data/uploads/*
+!data/uploads/.gitkeep
+
+# ===== 派生 / 本地产物 =====
+graphify-out/
+.screenshots/

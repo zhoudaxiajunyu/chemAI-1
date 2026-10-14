@@ -1,0 +1,1654 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChemAI 智辅化学 — 系统架构图集</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Microsoft YaHei", "PingFang SC", sans-serif;
+    background: #f5f7fa;
+    color: #1a1a2e;
+    line-height: 1.6;
+    padding: 24px;
+  }
+  .container { max-width: 1300px; margin: 0 auto; }
+  h1 { text-align: center; font-size: 28px; margin-bottom: 8px; color: #0f172a; }
+  .subtitle { text-align: center; color: #64748b; margin-bottom: 40px; font-size: 14px; }
+  .diagram-section {
+    background: #fff; border-radius: 12px; padding: 32px; margin-bottom: 36px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08); border-left: 5px solid;
+  }
+  .diagram-section.s1 { border-left-color: #3b82f6; } .diagram-section.s2 { border-left-color: #8b5cf6; }
+  .diagram-section.s3 { border-left-color: #10b981; } .diagram-section.s4 { border-left-color: #f59e0b; }
+  .diagram-section.s5 { border-left-color: #ef4444; } .diagram-section.s6 { border-left-color: #ec4899; }
+  .diagram-section.s7 { border-left-color: #06b6d4; } .diagram-section.s8 { border-left-color: #6366f1; }
+  .diagram-section.s9 { border-left-color: #14b8a6; } .diagram-section.s10 { border-left-color: #f97316; }
+  .diagram-section.s11 { border-left-color: #84cc16; } .diagram-section.s12 { border-left-color: #a855f7; }
+  .diagram-section.s13 { border-left-color: #0ea5e9; } .diagram-section.s14 { border-left-color: #d946ef; }
+  .diagram-section.s15 { border-left-color: #fb923c; } .diagram-section.s16 { border-left-color: #22d3ee; }
+  .diagram-section.s17 { border-left-color: #a78bfa; } .diagram-section.s18 { border-left-color: #34d399; }
+  .diagram-section.s19 { border-left-color: #f87171; } .diagram-section.s20 { border-left-color: #818cf8; }
+  .diagram-section.s21 { border-left-color: #fbbf24; } .diagram-section.s22 { border-left-color: #2dd4bf; }
+  .diagram-section.s23 { border-left-color: #c084fc; } .diagram-section.s24 { border-left-color: #e879f9; }
+  .diagram-section.s25 { border-left-color: #60a5fa; } .diagram-section.s26 { border-left-color: #4ade80; }
+  .diagram-section.s27 { border-left-color: #f43f5e; } .diagram-section.s28 { border-left-color: #0d9488; }
+  .diagram-section.s29 { border-left-color: #7c3aed; } .diagram-section.s30 { border-left-color: #2563eb; }
+  .diagram-section.s31 { border-left-color: #dc2626; } .diagram-section.s32 { border-left-color: #ca8a04; }
+  .diagram-section.s33 { border-left-color: #4338ca; } .diagram-section.s34 { border-left-color: #0891b2; }
+  .diagram-section.s35 { border-left-color: #be185d; } .diagram-section.s36 { border-left-color: #15803d; }
+  .diagram-section.s37 { border-left-color: #c026d3; } .diagram-section.s38 { border-left-color: #b45309; }
+  .diagram-section.s39 { border-left-color: #1d4ed8; } .diagram-section.s40 { border-left-color: #a21caf; }
+  .section-badge {
+    display: inline-block; padding: 4px 16px; border-radius: 20px;
+    font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 16px;
+  }
+  .s1 .section-badge { background: #3b82f6; } .s2 .section-badge { background: #8b5cf6; }
+  .s3 .section-badge { background: #10b981; } .s4 .section-badge { background: #f59e0b; }
+  .s5 .section-badge { background: #ef4444; } .s6 .section-badge { background: #ec4899; }
+  .s7 .section-badge { background: #06b6d4; } .s8 .section-badge { background: #6366f1; }
+  .s9 .section-badge { background: #14b8a6; } .s10 .section-badge { background: #f97316; }
+  .s11 .section-badge { background: #84cc16; } .s12 .section-badge { background: #a855f7; }
+  .s13 .section-badge { background: #0ea5e9; } .s14 .section-badge { background: #d946ef; }
+  .s15 .section-badge { background: #fb923c; } .s16 .section-badge { background: #22d3ee; }
+  .s17 .section-badge { background: #a78bfa; } .s18 .section-badge { background: #34d399; }
+  .s19 .section-badge { background: #f87171; } .s20 .section-badge { background: #818cf8; }
+  .s21 .section-badge { background: #fbbf24; } .s22 .section-badge { background: #2dd4bf; }
+  .s23 .section-badge { background: #c084fc; } .s24 .section-badge { background: #e879f9; }
+  .s25 .section-badge { background: #60a5fa; } .s26 .section-badge { background: #4ade80; }
+  .s27 .section-badge { background: #f43f5e; } .s28 .section-badge { background: #0d9488; }
+  .s29 .section-badge { background: #7c3aed; } .s30 .section-badge { background: #2563eb; }
+  .s31 .section-badge { background: #dc2626; } .s32 .section-badge { background: #ca8a04; }
+  .s33 .section-badge { background: #4338ca; } .s34 .section-badge { background: #0891b2; }
+  .s35 .section-badge { background: #be185d; } .s36 .section-badge { background: #15803d; }
+  .s37 .section-badge { background: #c026d3; } .s38 .section-badge { background: #b45309; }
+  .s39 .section-badge { background: #1d4ed8; } .s40 .section-badge { background: #a21caf; }
+  .diagram-section h2 { font-size: 22px; margin-bottom: 4px; }
+  .diagram-section .desc { color: #64748b; font-size: 14px; margin-bottom: 24px; }
+  .mermaid {
+    background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;
+    padding: 20px; overflow-x: auto; text-align: center;
+  }
+  .notes {
+    margin-top: 16px; padding: 12px 16px; background: #fefce8;
+    border-left: 3px solid #eab308; border-radius: 4px;
+    font-size: 13px; color: #713f12; line-height: 1.7;
+  }
+  @media (max-width: 768px) { body { padding: 12px; } .diagram-section { padding: 20px; } }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>ChemAI 智辅化学 -- 系统架构图集</h1>
+<p class="subtitle">40组架构图 - 覆盖系统总体到部署架构 + 质量自改进/前端路由/Provider/Planner/定时任务/数据隔离/对话管理/DB迁移/双层记忆/LaTeX/MCP映射/Agent工具矩阵/技术演进</p>
+
+<!-- 图1: 系统总体架构 -->
+<div class="diagram-section s1">
+<span class="section-badge">图 1</span>
+<h2>系统总体架构</h2>
+<p class="desc">前端三端 + React SPA - FastAPI 服务层 - Agent 层 - 业务服务层 - 数据层 - 基础设施</p>
+<div class="mermaid">
+flowchart TB
+    subgraph Frontend["前端层 - 三端 + 桌面应用 + React SPA"]
+        direction LR
+        R["React 教师端 SPA<br/>8路由 React19+antd6+Vite"] ~~~ T["教师端 Web 6页面<br/>legacy 归档"]
+        S["学生端 Mobile m/ 8文件"] ~~~ P["家长端 Mobile 2页面"]
+        D["桌面应用 3个EXE"]
+    end
+
+    subgraph APILayer["FastAPI 服务层 - 29个路由模块"]
+        direction LR
+        subgraph API_Group1["教学核心"]
+            direction LR
+            AGENT_API["Agent对话"] ~~~ QUIZ["AI出题"]
+            PRACTICE["练习管理"] ~~~ DIAG["障碍诊断"]
+        end
+        subgraph API_Group2["数据与面板"]
+            direction LR
+            PANEL["学情面板"] ~~~ ANALYTICS["数据分析"]
+            EXAM["考试管理"] ~~~ REVIEW["间隔复习"]
+        end
+        subgraph API_Group3["管理与集成"]
+            direction LR
+            AUTH["认证授权"] ~~~ OCR_API["OCR识别 批改"] ~~~ PARENT_API["家长服务"]
+            NOTIF_API["通知推送"] ~~~ MCP_API["MCP工具"] ~~~ LMS_API["LMS集成"]
+        end
+        subgraph API_Group4["扩展模块"]
+            direction LR
+            SCHOOL["学校/年级/入驻"] ~~~ LOG["日志/预警/错题"]
+            PARSER["文档解析"] ~~~ MEMORY["学情记忆"] ~~~ WORKSPACE["工作区"]
+        end
+    end
+
+    subgraph AgentLayer["Agent 层 - LangGraph v2 ReAct"]
+        direction LR
+        GW["Gateway 意图分类器"] --> REACT["ReAct Agent 单Agent"]
+        PS["Persona 4角色 YAML"] --> REACT
+        PL["Planner 任务拆解"] --> REACT
+        REACT --> TOOLS["42个领域工具 + 5个浏览器工具"]
+        GS["GuardState 四层护栏"] -.-> REACT
+        TOOLS --> SSE["SSE 流式适配器 9种事件"]
+    end
+
+    subgraph Services["业务服务层 - 21个业务服务"]
+        direction LR
+        subgraph SVC_Group1["内容生产"]
+            direction LR
+            AUDIT["四维审核引擎"] ~~~ LLM["LLM多Provider"]
+            OCR_SVC["OCR管线 百度/MinerU/PP-OCR"] ~~~ QB["题库服务 QuestionBankService"]
+        end
+        subgraph SVC_Group2["学习分析"]
+            direction LR
+            DIAG_SVC["诊断引擎"] ~~~ SPACE["间隔复习引擎"]
+            WARN_SVC["学情预警"] ~~~ KG["知识图谱 向量检索"]
+        end
+        subgraph SVC_Group3["生态集成"]
+            EXPORT["导出服务"] ~~~ NOTIF_SVC["通知服务"] ~~~ LMS["LMS连接器"]
+            RENDER["RDKit 结构渲染"] ~~~ MEM_SVC["长期记忆 SqliteStore"]
+        end
+    end
+
+    subgraph DataLayer["数据层 - 4个持久化存储"]
+        direction LR
+        SQLite[("SQLite WAL 业务数据")] ~~~ ChromaDB[("ChromaDB 向量索引")]
+        CHECKPOINT[("Checkpoints DB Agent记忆")] ~~~ STORE[("Store DB 长期记忆")]
+    end
+
+    subgraph Infra["基础设施"]
+        direction LR
+        DOCKER["Docker Compose"] ~~~ SCHEDULER["APScheduler 3定时任务"] ~~~ MIDDLEWARE["中间件 JWT ChemRender"]
+        CELERY["Celery/Redis 预留"] ~~~ QIMG["question_images 静态图"]
+    end
+
+    Frontend -->|"HTTP REST SSE"| APILayer
+    APILayer --> AgentLayer
+    AgentLayer --> Services
+    Services --> DataLayer
+    DataLayer -.-> Infra
+</div>
+<div class="notes"><strong>说明：</strong>前端通过 HTTP REST API 和 SSE 流式协议与后端通信，主流入口为 React 教师端 SPA（8 路由），旧多页教师端与移动端页面保留归档/运行。Agent 层是独立的 LangGraph 运行时（v2 单 Agent），通过 FastAPI channel 对外暴露；2026-08 架构升级后：向量检索接入 dashscope 嵌入、长期记忆改为 LangGraph SqliteStore、上下文智能裁剪、诊断写回。桌面应用内嵌 uvicorn 服务器，复用全部 Web 前端代码。</div>
+</div>
+
+<!-- 图2: Agent ReAct 运行时架构 -->
+<div class="diagram-section s2">
+<span class="section-badge">图 2</span>
+<h2>Agent ReAct 运行时架构</h2>
+<p class="desc">Gateway - Persona - GuardState - 42 Tools + 5 浏览器工具 - SSE - 一次对话的完整处理链路</p>
+<div class="mermaid">
+flowchart LR
+    U["用户输入"] --> GW["Gateway 意图分类器"]
+    GW -->|"对话"| REACT["ReAct Agent"]
+    GW -->|"页面跳转"| NAV["页面跳转 短路返回"]
+    REACT --> PS["Persona 过滤 工具元数据 x 角色配置"]
+    PS --> TOOLS["可用工具集 9-40 个<br/>含文件系统/Shell/Planner"]
+    TOOLS --> LOOP{"ReAct 循环 max 12轮"}
+    LOOP -->|"思考"| LLM["LLM 推理 选择工具"]
+    LLM -->|"行动"| GS["GuardState 护栏"]
+    GS -->|检查通过| EXEC["执行工具"]
+    GS -->|拦截| SKIP["跳过 审批 限流"]
+    EXEC -->|"观察"| LOOP
+    LOOP -->|完成| SSE_ADAPT["SSE 适配器"]
+    SSE_ADAPT -->|"文本 / 组件 / 跳转 / 操作"| FRONT["前端渲染"]
+    GS -.->|"剥离 _route / _component"| SSE_ADAPT
+</div>
+<div class="notes"><strong>说明：</strong>v2 单 Agent 架构中，所有 persona 过滤后的工具对 LLM 直接可见。LLM 根据工具的 docstring 自主选择。GuardState 在每次工具调用时执行去重、限流、审批、前置条件四层检查。_route 和 _component 字段在 GuardState 中被剥离，由 SSE 适配器转为前端事件。2026-08 升级后工具总数 42 个领域工具 + 5 个浏览器工具：新增文件系统（read/write/edit/find/grep）、Shell（bash）、任务规划（plan_task）、记忆（memory_student_get / memory_teacher_get）等；各 persona 可见工具 4~35 个领域工具 + 无条件附加 5 个浏览器工具。</div>
+</div>
+
+<!-- 图3: OCR 批改全管线 -->
+<div class="diagram-section s3">
+<span class="section-badge">图 3</span>
+<h2>答题卡 OCR 批改全管线</h2>
+<p class="desc">从批量上传到班级统计的完整 10 步处理管线</p>
+<div class="mermaid">
+flowchart TD
+    UPLOAD["批量上传 JPG PNG PDF"] --> SESSION["创建批处理任务 状态已上传"]
+    SESSION --> PREVIEW["预览 OCR 快速识别"]
+    PREVIEW --> READY["状态就绪 教师确认"]
+    READY --> ROUTE{"文档类型判断"}
+    ROUTE -->|PDF 试卷| MINERU["MinerU 引擎 PDF解析"]
+    ROUTE -->|图片 答题卡| CUT["答题卡裁切 区域切分"]
+    CUT --> BAIDU["百度教育 OCR 主引擎 doc_analysis"]
+    BAIDU -->|失败/低置信| PADDLE["PP-OCRv6_small 本地备选"]
+    PADDLE -->|低置信 漏检| VLM_REV["VLM 视觉复核 glm-4v/mimo 兜底"]
+    MINERU --> EXTRACT["提取学号 姓名 作答"]
+    BAIDU --> EXTRACT
+    PADDLE --> EXTRACT
+    VLM_REV --> EXTRACT
+    EXTRACT --> SRC{"答案来源"}
+    SRC -->|题库匹配| AUTO["自动匹配标准答案"]
+    SRC -->|教师粘贴| MANUAL["教师提供答案"]
+    SRC -->|LLM 自判| LLM_JUDGE["LLM 领域知识判断"]
+    AUTO --> GRADE["LLM 语义批改 mimo主模型"]
+    MANUAL --> GRADE
+    LLM_JUDGE --> GRADE
+    GRADE --> CONFIRM["教师确认修正 逐学生结果卡片"]
+    CONFIRM --> SAVE["保存批改结果 写入 StudentAnswer"]
+    SAVE --> DIAG["自动触发 barrier 诊断"]
+    DIAG --> STATS["班级统计 正确率 排名 分布"]
+</div>
+<div class="notes"><strong>说明：</strong>答题卡 OCR 主引擎为百度教育 OCR（doc_analysis 在线识别，支持印刷+手写混排），图片先经答题卡裁切（paper_cut_client）切分作答区域再逐区识别；PDF 试卷走 MinerU 本地解析；PP-OCRv6_small（paddleocr/onnxruntime）为可选本地引擎（依赖未安装时自动降级跳过）；低置信/漏检由视觉模型（GLM-4V / MiMo）复核兜底。LLM 语义批改使用异步 API（主模型 MiMo，失败降级 dashscope/deepseek），失败时退化为同步 OCR。整个流程由 APScheduler 5 秒轮询驱动 OCRTask 状态表（已上传→预览→就绪→处理中→完成/失败）。</div>
+</div>
+
+<!-- 图4: 四维安全审核引擎 -->
+<div class="diagram-section s4">
+<span class="section-badge">图 4</span>
+<h2>四维安全审核引擎</h2>
+<p class="desc">化学方程式四维安全检查 - 配平 条件 产物 结构</p>
+<div class="mermaid">
+flowchart TD
+    INPUT["化学方程式输入"] --> PARSE["解析方程式 提取反应物 产物 条件"]
+    PARSE --> D1["维度1 系数配平"]
+    PARSE --> D2["维度2 反应条件"]
+    PARSE --> D3["维度3 产物稳定性"]
+    PARSE --> D4["维度4 分子结构"]
+    D1 --> D1_ALG["元素原子计数法 反应物原子总数 = 产物原子总数"]
+    D1_ALG --> D1_RES{"配平?"}
+    D2 --> D2_RULES["14 类条件规则库 点燃 加热 高温 催化剂 通电 光照 加压 浓 稀 过量 足量 适量 高温高压"]
+    D2_RULES --> D2_RES{"条件合理?"}
+    D3 --> D3_RULES["化学合理性规则库 气体逸出 沉淀生成 氧化还原产物 双水解 络合反应 歧化反应"]
+    D3_RULES --> D3_RES{"产物稳定?"}
+    D4 --> D4_CHECK["格式检查 元素符号大小写 下标数字 括号配对 离子电荷 LaTeX规范"]
+    D4_CHECK --> D4_RES{"格式正确?"}
+    D1_RES -->|"通过"| P1["通过"]
+    D1_RES -->|"硬红线失败"| BLOCK["拦截"]
+    D2_RES -->|"通过"| P2["通过"]
+    D2_RES -->|部分缺失| WARN["警告"]
+    D2_RES -->|矛盾| BLOCK
+    D3_RES -->|"通过"| P3["通过"]
+    D3_RES -->|可疑| WARN
+    D3_RES -->|明显错误| BLOCK
+    D4_RES -->|"通过"| P4["通过"]
+    D4_RES -->|格式错误| WARN
+    P1 --> MERGE{"综合判定"}
+    P2 --> MERGE
+    P3 --> MERGE
+    P4 --> MERGE
+    WARN --> MERGE
+    BLOCK --> MERGE
+    MERGE -->|"全部通过"| OUTPUT_PASS["审核通过 输出给用户"]
+    MERGE -->|"有警告"| OUTPUT_WARN["审核通过 有警告 标记审核徽章"]
+    MERGE -->|"有拦截"| OUTPUT_BLOCK["审核拦截 打回重新生成"]
+</div>
+<div class="notes"><strong>说明：</strong>系数配平是硬红线，100% 准确率，确定性测试全覆盖。14 类反应条件通过关键词规则库匹配，条件产物召回率目标 80% 以上。每次 AI 出题都自动触发四维审核，审核通过前题目绝不输出给用户。</div>
+</div>
+
+<!-- 图5: 障碍诊断引擎 -->
+<div class="diagram-section s5">
+<span class="section-badge">图 5</span>
+<h2>障碍诊断引擎</h2>
+<p class="desc">规则引擎初筛 - LLM 深度分析 - 综合判定 - 三维障碍分类</p>
+<div class="mermaid">
+flowchart TD
+    INPUT2["学生答案 + 题目 + 正确答案"] --> RULE["规则引擎初筛"]
+    RULE -->|"概念 关键词"| RC["概念理解型 置信度 0.5-0.7"]
+    RULE -->|"审题 关键词"| RR["审题障碍型 置信度 0.5-0.7"]
+    RULE -->|"表述 关键词"| RE["表述障碍型 置信度 0.5-0.7"]
+    RC --> LLM2["LLM 深度分析"]
+    RR --> LLM2
+    RE --> LLM2
+    LLM2 --> PROMPT["诊断 Prompt 题目+学生答案+正确答案 输出 障碍类型 + 置信度 + 理由 + 建议"]
+    PROMPT --> JUDGE{"综合判定"}
+    JUDGE -->|conf >= 0.8| HIGH["高置信度 自动采纳"]
+    JUDGE -->|0.7 <= conf < 0.8| MID["中等置信度 采纳但标记"]
+    JUDGE -->|conf < 0.7| LOW["低置信度 建议人工复核"]
+    HIGH --> WRITE["写入作答记录 障碍标注"]
+    MID --> WRITE
+    LOW --> WRITE
+    WRITE --> AGG["聚合计算 所有答案 barrier 分布"]
+    AGG --> STUDENT["更新学生障碍画像 概念/审题/表述 三类分布"]
+    STUDENT --> OVERRIDE{"教师覆盖?"}
+    OVERRIDE -->|是| TEACHER["教师手动修正 PUT diagnosis override"]
+    OVERRIDE -->|否| DONE["诊断完成"]
+    TEACHER --> DONE
+</div>
+<div class="notes"><strong>说明：</strong>关键词规则引擎：concept（概念 原理 不理解）、reading（看错 审题 陷阱）、expression（写错 方程式 计算错）。诊断在学生提交答案后自动触发，无需教师手动操作。教师可通过 BarrierConfig 自定义诊断阈值。</div>
+</div>
+
+<!-- 图6: 自适应练习闭环 -->
+<div class="diagram-section s6">
+<span class="section-badge">图 6</span>
+<h2>自适应练习闭环</h2>
+<p class="desc">Diagnosis - ZPD - Generate - Practice - Diagnosis 持续优化的学习循环</p>
+<div class="mermaid">
+flowchart LR
+    DIAG2["障碍诊断 障碍类型 薄弱知识点 正确率"] --> ZPD["ZPD 计算 难度 = 当前水平 + 0.2 知识点优先薄弱项 题型偏向弱项"]
+    ZPD --> STRATEGY{"策略矩阵"}
+    STRATEGY -->|"概念"| CS["降低难度 -0.2 基础概念题优先"]
+    STRATEGY -->|"审题"| RS["保持难度 情景陷阱题为主"]
+    STRATEGY -->|"表述"| ES["保持难度 计算书写题为主"]
+    CS --> GEN["LLM 生成个性化题目"]
+    RS --> GEN
+    ES --> GEN
+    GEN --> ASSIGN["布置练习 需教师审批授权"]
+    ASSIGN --> PRACTICE2["学生完成练习"]
+    PRACTICE2 --> SUBMIT2["提交答案"]
+    SUBMIT2 --> DIAG2
+</div>
+<div class="notes"><strong>说明：</strong>ZPD（最近发展区）模型基于最近 30 道题的正确率窗口计算。自适应策略矩阵根据障碍类型调整出题参数。教师触发后，系统为班级 Top 5 薄弱学生各生成一份个性化练习。整个闭环自动运行，持续优化学生能力画像。</div>
+</div>
+
+<!-- 图7: 艾宾浩斯间隔复习状态机 -->
+<div class="diagram-section s7">
+<span class="section-badge">图 7</span>
+<h2>艾宾浩斯间隔复习状态机</h2>
+<p class="desc">5 级掌握度模型 - 升级 降级 重置规则</p>
+<div class="mermaid">
+---
+title: 艾宾浩斯间隔复习状态机
+---
+stateDiagram-v2
+    state "L0 初始学习" as L0
+    state "L1 记忆巩固" as L1
+    state "L2 短期掌握" as L2
+    state "L3 长期掌握" as L3
+    state "L4 熟练" as L4
+    state "已掌握" as DONE
+    [*] --> L0
+    L0 --> L1 : 连续正确>=2
+    L1 --> L2 : 连续正确>=2
+    L2 --> L3 : 连续正确>=2
+    L3 --> L4 : 连续正确>=2
+    L4 --> DONE : 连续正确>=2<br/>复习周期结束
+    L1 --> L0 : 连续错误>=2
+    L2 --> L1 : 连续错误>=2
+    L3 --> L2 : 连续错误>=2
+    L4 --> L3 : 连续错误>=2
+    L0 --> L0 : 一正一错保持
+    L1 --> L1 : 一正一错保持
+    note right of L0 : 刚做错的题目 - 初始学习
+    note right of DONE : 复习周期结束 - 已掌握
+</div>
+<div class="notes"><strong>说明：</strong>基于艾宾浩斯遗忘曲线设计，等级 0~4 五级，复习间隔：1天-3天-7天-14天-30天（SPIRAL_REVIEW_DAYS）。连续正确 2 次以上升级，连续错误 2 次以上降级，一正一错保持当前级别不变。完成第 5 次复习（L4 连续正确）后状态置为已掌握（done）。到期未复习标记为 overdue，优先级高于正常待复习任务。</div>
+</div>
+
+<!-- 图8: 权限分级体系 -->
+<div class="diagram-section s8">
+<span class="section-badge">图 8</span>
+<h2>权限分级体系</h2>
+<p class="desc">六角色数据范围由全局逐级收窄 · 操作能力随分级递减 · 含家长独立通道</p>
+<div class="mermaid">
+flowchart TB
+    subgraph AUTH["认证通道"]
+        direction LR
+        JWT["JWT 统一认证<br/>admin / 教务 / 组长 / teacher / student"]
+        PJWT["家长独立 JWT<br/>手机号 + 绑定码 免密"]
+    end
+
+    subgraph HIER["权限分级 · 数据范围逐级收窄"]
+        direction TB
+        A["admin<br/>全局 · 全部资源<br/>查看 / 创建 / 修改 / 删除"]
+        B["教务管理员<br/>本校 · 学校/年级/班级/教师/学生<br/>查看 / 创建 / 修改 / 删除"]
+        C["学科组长<br/>化学科 · 年级/班级/教师/学生<br/>查看 / 创建 / 修改 / 删除"]
+        D["teacher<br/>本人班级 · 班级/学生<br/>查看 / 批改 / 出题 / 删除"]
+        E["student<br/>本人数据<br/>查看 + 练习"]
+        A --> B --> C --> D --> E
+    end
+
+    subgraph EXTRA["家长通道"]
+        F["parent<br/>绑定子女 · 仅子女记录<br/>仅查看"]
+    end
+
+    JWT --> A
+    PJWT --> F
+    F -.->|"只读 · 范围等同 student"| E
+</div>
+<div class="notes"><strong>说明：</strong>权限按数据范围分级：admin（全局）→ 教务管理员（本校）→ 学科组长（化学科）→ teacher（本人班级）→ student（本人数据）逐级收窄，操作能力随分级递减；parent 走独立 JWT 通道（手机号 + 绑定码 免密），仅查看绑定子女记录。运行时三层防护：HTTP 中间件验证 JWT（白名单前缀跳过）→ 资源级权限校验（角色权限矩阵）→ Persona 过滤（工具元数据与角色白名单交集）。教师子角色（admin 教务 组长 teacher）在前端菜单和数据范围上存在差异。已知缺陷：用户模块部分端点未使用权限校验。</div>
+</div>
+
+<!-- 图9: 教师入驻审批状态机 -->
+<div class="diagram-section s9">
+<span class="section-badge">图 9</span>
+<h2>教师入驻审批状态机</h2>
+<p class="desc">申请 - 审核 - 创建账户的完整状态流转</p>
+<div class="mermaid">
+---
+title: 教师入驻审批状态机
+---
+stateDiagram-v2
+    state "待审批" as pending
+    state "已通过" as approved
+    state "已拒绝" as rejected
+    [*] --> pending : 教师提交申请
+    pending --> approved : Admin 审批通过 自动创建教师和账户
+    pending --> rejected : Admin 审批拒绝
+    approved --> [*] : 教师可登录使用
+    rejected --> [*] : 流程结束
+    note right of approved : 自动创建教师和账户记录
+</div>
+<div class="notes"><strong>说明：</strong>教师入驻需通过审批流程，只有 admin 角色可审批（双重检查：权限校验 + 内联角色检查）。审批通过后自动创建 Teacher 和 Account 记录。学生没有独立的审批流程，仅修改学生状态字段，且审批端点无权限检查（已知缺陷）。</div>
+</div>
+
+<!-- 图10: 核心数据模型 ER 图 -->
+<div class="diagram-section s10">
+<span class="section-badge">图 10</span>
+<h2>核心数据模型 ER 图</h2>
+<p class="desc">26 个 SQLAlchemy 模型的核心实体与关系</p>
+<div class="mermaid">
+flowchart LR
+    subgraph Core["核心业务实体"]
+        School["School 学校"] --> Grade["Grade 年级"]
+        Grade --> Class["Class 班级"]
+        Class --> Student["Student 学生"]
+        Class --> ExamRecord["ExamRecord 考试"]
+        School --> Teacher["Teacher 教师"]
+        Teacher --> TCS["TeacherClassSubject 任教关联"]
+        TCS --> Class
+    end
+    subgraph Content["内容实体"]
+        ExamRecord --> Question["Question 题目"]
+        Question --> StudentAnswer["StudentAnswer 作答"]
+        Student --> StudentAnswer
+        QuestionSet["QuestionSet 题库集合"] --> QSI["QuestionSetItem 集合条目"]
+        QSI --> Question
+        HistoricalExam["HistoricalExam 历史真题"]
+        KnowledgePoint["KnowledgePoint 知识点"] -.-> Question
+    end
+    subgraph Learning["学习诊断"]
+        Student --> ReviewTask["ReviewTask 复习"]
+        Question --> ReviewTask
+        Student --> WarningLog["WarningLog 预警"]
+        Student --> BarrierConfig["BarrierConfig 配置"]
+        Teacher --> BarrierConfig
+        UploadSession["UploadSession 批处理"] --> OCRTask["OCRTask 批改任务"]
+        OCRTask --> StudentAnswer
+        Student --> LPH["LearningPlanHistory 学习计划"]
+        Student --> Submission["StudentSubmission 提交"]
+    end
+    subgraph Social["家长与通知"]
+        Student --> Binding["StudentParentBinding 绑定"]
+        Parent["Parent 家长"] --> Binding
+        Parent --> Notif["ParentNotification 通知"]
+    end
+    subgraph Auth["认证与治理"]
+        Account["Account 账户"] --> Teacher
+        Account --> Student
+        Account --> Parent
+        TeacherApplication["TeacherApplication 入驻申请"] --> Teacher
+        OperationLog["OperationLog 操作日志"]
+    end
+</div>
+<div class="notes"><strong>说明：</strong>完整数据模型共 26 个表加 5 个枚举类型（BarrierType / RecordType / QuestionSource / AuditStatus / Difficulty）。核心业务链：School - Grade - Class - Student，Teacher 通过 TeacherClassSubject 任教关联绑定班级，ExamRecord - Question - StudentAnswer 构成考试作答链。诊断链：作答记录障碍标注聚合后更新学生障碍画像。复习链：错题生成 ReviewTask 进行间隔复习。OCR 批改链：UploadSession - OCRTask - StudentAnswer。题库集合链：QuestionSet - QuestionSetItem - Question（AI 保存即入集合并同步向量索引）。入驻与治理：TeacherApplication 审批通过后自动创建 Teacher 与 Account，OperationLog 记录审计操作。多租户隔离通过学校标识层级实现。</div>
+</div>
+
+<!-- 图11: 三端数据闭环 -->
+<div class="diagram-section s11">
+<span class="section-badge">图 11</span>
+<h2>三端数据闭环</h2>
+<p class="desc">教师 - 学生 - 系统 - 教师 - 家长 完整数据流时序</p>
+<div class="mermaid">
+sequenceDiagram
+    participant T as 教师端
+    participant SYS as ChemAI 系统
+    participant STU as 学生端
+    participant P as 家长端
+    T->>SYS: 创建考试 + 发布题目
+    SYS-->>T: 考试已发布
+    STU->>SYS: 查看练习任务列表
+    SYS-->>STU: 返回待完成任务
+    STU->>SYS: 逐题作答 + 提交
+    SYS->>SYS: 自动批改 + LLM 障碍诊断
+    SYS->>SYS: 写入作答记录 + 更新学生障碍画像
+    SYS-->>STU: 即时返回得分 + 对错
+    T->>SYS: 查看班级诊断结果
+    SYS->>SYS: 聚合班级障碍分布
+    SYS-->>T: 班级统计 + 个体诊断 + 学习计划
+    T->>SYS: 布置自适应练习
+    SYS->>SYS: ZPD 计算 + 个性化出题
+    SYS-->>STU: 个性化练习已就绪
+    SYS->>SYS: 按需生成家长周报（generate_parent_report 工具）
+    SYS-->>P: 推送通知 + 周报
+    P->>SYS: 查看周报
+    SYS-->>P: 通俗语言学习报告
+    P->>SYS: AI 助手询问孩子情况
+    SYS-->>P: 家长角色 Agent 回复
+</div>
+<div class="notes"><strong>说明：</strong>完整的 B2B2C 数据闭环：教师端发布内容 - 学生端消费作答 - 系统自动诊断 - 教师端查看分析 - 家长端接收周报。关键自动化节点：学生提交答案后自动触发 LLM 诊断（无需教师操作）、APScheduler 每天 8:00 推送每日练习、午夜检查学情预警。家长周报由 Agent 工具按需生成（非定时任务），家长端 AI 解读走家长角色 Agent 对话（SSE 流式）。</div>
+</div>
+
+<!-- 图12: 部署架构 -->
+<div class="diagram-section s12">
+<span class="section-badge">图 12</span>
+<h2>部署架构</h2>
+<p class="desc">Docker Compose + SQLite WAL + Nginx + APScheduler + 桌面应用</p>
+<div class="mermaid">
+flowchart TB
+    subgraph Docker["Docker Compose 单容器"]
+        UVICORN["Uvicorn FastAPI 应用"]
+        SCHED["APScheduler 3 定时任务"]
+        FRONT["frontend 服务(可选 profile:full)<br/>Vite 开发服务器"]
+    end
+    subgraph Storage["数据存储"]
+        DB[("主业务库 SQLite WAL 模式")]
+        CHECK[("对话检查点库 Agent 对话检查点")]
+        STORE2[("长期记忆库 LangGraph SqliteStore")]
+        CHROMA[("ChromaDB 向量索引")]
+    end
+    subgraph Desktop["桌面应用 可选"]
+        EXE_T["教师端 EXE PyWebView 1200x800"]
+        EXE_S["学生端 EXE PyWebView 430x900"]
+        EXE_P["家长端 EXE PyWebView 430x900"]
+    end
+    subgraph External["外部服务"]
+        DS["DeepSeek API Agent/网关 LLM"]
+        MIMO["MiMo API 业务服务主力 联网+图像"]
+        ZHIPU["智谱 API GLM-4-Flash/glm-4v"]
+        QWEN["通义千问 DashScope 兜底+嵌入"]
+        BAIDU_OCR["百度教育 OCR 主引擎"]
+        PADDLE_OCR["PP-OCRv6_small 本地可选 OCR"]
+    end
+    Browser["浏览器"] -->|"HTTP / SSE"| UVICORN
+    UVICORN --> Storage
+    UVICORN --> External
+    SCHED --> DB
+    FRONT -.->|"可选 profile:full"| UVICORN
+    Desktop -.->|"3 个 EXE 内嵌 uvicorn"| UVICORN
+</div>
+<div class="notes"><strong>说明：</strong>当前部署使用 Docker Compose 单容器（docker-compose up 一键启动；frontend 服务为可选 profile，默认不启动）。SQLite WAL 模式支持并发读写。4 个 LLM Provider：DeepSeek 负责 Agent/网关分类，MiMo 为业务服务主力并支持联网搜索与图像，智谱 GLM-4-Flash / glm-4v 作辅助推理与视觉复核，通义千问 qwen-turbo 作最后兜底（dashscope 同时提供 text-embedding-v3 向量嵌入）。答题卡 OCR 主引擎为百度教育 OCR（在线高精度），PP-OCRv6_small 为本地可选引擎（paddleocr 未安装时自动降级）。APScheduler 在应用进程内运行 3 个定时任务（每日练习 8:00 / 学情预警午夜 / OCR 轮询 5s）；Celery + Redis 已引入依赖并定义任务（app/jobs/），但未接入主进程，为异步队列预留。桌面应用通过 PyInstaller 打包，内嵌 uvicorn 服务器，代码与 Web 版 100% 复用。</div>
+</div>
+
+<!-- 图13: Gateway 意图分类器架构 -->
+<div class="diagram-section s13">
+<span class="section-badge">图 13</span>
+<h2>Gateway 意图分类器架构</h2>
+<p class="desc">双路径分类 - LLM 语义分类 + 关键词后备 - DeepSeek 与 MiMo Provider 自动选择 - 页面跳转短路返回</p>
+<div class="mermaid">
+flowchart TD
+    UIN["用户输入消息"] --> CLS{"分类路径选择"}
+    CLS -->|"LLM语义分类"| LLMC["LLM语义分类 DeepSeek 低温度参数"]
+    CLS -->|"关键词匹配"| KW["多字中文关键词分组匹配"]
+    LLMC --> PROV{"Provider选择"}
+    PROV -->|"图片 OCR"| MIMO["MiMo Provider"]
+    PROV -->|"其他内容"| DS["DeepSeek Provider"]
+    KW --> RESULT["IntentResult 结果"]
+    LLMC --> RESULT
+    MIMO --> RESULT
+    DS --> RESULT
+    RESULT --> TYPE{"意图类型判断"}
+    TYPE -->|"页面跳转"| SHORT["页面跳转 短路返回 跳过Agent"]
+    TYPE -->|"对话"| AGENT["进入ReAct Agent 完整处理链路"]
+    RESULT -.-> FIELDS["输出字段 类型/页面/工具/Provider"]
+</div>
+<div class="notes"><strong>说明：</strong>Gateway 是 Agent 层的入口，使用双路径分类策略。LLM 语义分类使用 DeepSeek 超低温度参数确保分类稳定。多字中文关键词分组匹配（出题/诊断/周报/搜索/辅导/配平等 10+ 组）作为兜底方案。图片和 OCR 相关请求自动路由到 MiMo Provider。navigate 类型直接短路返回前端导航事件，完全跳过 Agent 推理环节，大幅降低延迟。</div>
+</div>
+
+<!-- 图14: Persona 系统 - 四角色 + 工具过滤 -->
+<div class="diagram-section s14">
+<span class="section-badge">图 14</span>
+<h2>Persona 系统 - 四角色 + 工具过滤</h2>
+<p class="desc">四种角色并行的 Persona 卡片 - 工具元数据 与 角色配置 双层交集过滤</p>
+<div class="mermaid">
+flowchart TD
+    subgraph P4["四个角色 Persona YAML"]
+        TEACH["Teacher 35个领域工具 全部教学权限"]
+        STUD["Student 10个领域工具 苏格拉底式引导"]
+        TUTOR["Tutor 21个领域工具 默认角色"]
+        PAR["Parent 4个领域工具 仅查询功能"]
+    end
+    subgraph FILTER["双层过滤机制"]
+        T_META["第一层 工具元数据 工具-角色映射表"]
+        YAML["第二层 角色配置 工具白名单"]
+        INTER["取交集 得到最终可用工具集"]
+    end
+    P4 --> T_META
+    T_META --> INTER
+    YAML --> INTER
+    INTER --> FINAL["最终可用工具集合 4至35个领域 + 5个浏览器工具"]
+</div>
+<div class="notes"><strong>说明：</strong>系统定义 4 种 Persona 角色（personas/*.yaml）。Teacher 拥有全部 35 个教学工具（出题、批改、诊断、练习、班级管理、文件系统、Shell、任务规划等）。Student 限制为 10 个工具，采用苏格拉底式问答引导而非直接给出答案。Tutor 提供 21 个基础工具，适合课余辅导场景。Parent 仅保留 4 个查询工具（周报、诊断、搜索、记忆），确保家长只读访问子女学习数据。工具元数据（TOOL_META 工具-角色映射表）与角色配置（available_skills 工具白名单）取交集，形成领域工具集合；v2 运行时另向所有 persona 无条件附加 5 个浏览器工具（浏览/读取/点击/输入/截图），故实际可见工具数 = 领域工具 + 5。</div>
+</div>
+
+<!-- 图15: GuardState 四层护栏机制 -->
+<div class="diagram-section s15">
+<span class="section-badge">图 15</span>
+<h2>GuardState 四层护栏机制</h2>
+<p class="desc">前置条件 - 调用限制 - 去重 - 审批门控 四层级联 - Interrupt 中断与 SSE 审批等待</p>
+<div class="mermaid">
+flowchart TD
+    TC["工具调用请求"] --> L1["第一层 前置条件检查"]
+    L1 -->|"条件满足"| L2["第二层 调用次数限制"]
+    L1 -->|"条件不满足"| BLOCK["拦截 拒绝执行"]
+    L2 -->|"未超限"| L3["第三层 去重检查"]
+    L2 -->|"超出限制"| BLOCK
+    L3 -->|"无重复"| L4["第四层 审批门控"]
+    L3 -->|"检测重复"| SKIP["跳过 避免重复调用"]
+    L4 -->|"自动通过"| EXEC["执行工具"]
+    L4 -->|"需要审批"| INTERRUPT["中断 挂起"]
+    INTERRUPT --> SSE["SSE 事件 等待审批状态"]
+    SSE --> WAIT["等待教师审批确认"]
+    WAIT -->|"批准"| EXEC
+    WAIT -->|"拒绝"| BLOCK
+    EXEC --> DONE["返回工具执行结果"]
+</div>
+<div class="notes"><strong>说明：</strong>四层护栏形成级联过滤器。第一层检查工具执行的业务前置条件（如创建考试需要先有班级）。第二层限制每轮对话中工具的调用次数（防止死循环）。第三层使用请求签名去重，避免相同参数重复调用。第四层审批门控对敏感操作（如发布考试、删除数据）触发中断，通过 SSE 等待审批状态通知前端等待教师确认。</div>
+</div>
+
+<!-- 图16: SSE 事件流协议 -->
+<div class="diagram-section s16">
+<span class="section-badge">图 16</span>
+<h2>SSE 事件流协议</h2>
+<p class="desc">9 种 SSE 事件类型的完整时序图 - 从用户输入到对话结束</p>
+<div class="mermaid">
+sequenceDiagram
+    participant U as User
+    participant A as Agent
+    participant L as LLM
+    participant T as Tools
+    participant S as SSE Adapter
+    participant F as Frontend
+    U->>A: 发送消息
+    A->>S: phase 事件 阶段开始
+    S-->>F: SSE phase 阶段切换
+    A->>L: 推理请求
+    L-->>A: LLM 文本流
+    A->>S: text 事件 文本片段
+    S-->>F: SSE text 流式文本
+    A->>T: 调用工具
+    A->>S: tool_call 事件
+    S-->>F: SSE tool_call 工具调用
+    T-->>A: 工具返回结果
+    A->>S: tool_result 事件
+    S-->>F: SSE tool_result 工具结果
+    A->>S: component 事件
+    S-->>F: SSE component 组件渲染
+    A->>S: navigate 事件
+    S-->>F: SSE navigate 页面跳转
+    A->>S: action 事件
+    S-->>F: SSE action 前端操作
+    A->>S: populate 事件
+    S-->>F: SSE populate 表单填充
+    A->>S: done 事件
+    S-->>F: SSE done 对话结束
+</div>
+<div class="notes"><strong>说明：</strong>SSE（Server-Sent Events）采用单向推送协议，共 9 种事件类型覆盖完整对话生命周期：phase（thinking/executing/replying/awaiting_approval 阶段切换）、text（流式文本）、tool_call、tool_result、component（前端专用组件渲染，如题目卡片、诊断报告、内联面板）、navigate（页面跳转）、action（前端操作）、populate（表单填充）、done（对话结束）。navigate/action/populate 是前端指令事件，由 GuardState 剥离内部路由和组件字段后生成。工具执行异常不单独发 error 事件，而是通过 tool_result 的 error 字段返回；对话异常终止由通道层以非 200 状态或 done 前的中断体现。</div>
+</div>
+
+<!-- 图17: React 教师端 SPA 架构 -->
+<div class="diagram-section s17">
+<span class="section-badge">图 17</span>
+<h2>React 教师端 SPA 架构</h2>
+<p class="desc">React 19 + antd 6 + Vite - 8 路由 - 组件分层 - Agent 工作台内联交互</p>
+<div class="mermaid">
+flowchart TD
+    subgraph ROUTES["路由层 HashRouter - 8 个路由"]
+        direction LR
+        LOGIN["/login 登录页"] ~~~ CHAT["/chat Agent 工作台"]
+        CLASS["/class 班级学情"] ~~~ STU["/students 学生管理"]
+        EXAM["/exam 出题工作台"] ~~~ DIAG["/diagnosis 诊断分析"]
+        OCR["/ocr 答题卡批改"] ~~~ OCRS["/ocr-sheets 答题卡批处理"]
+    end
+    subgraph PAGES["页面层 pages/teacher"]
+        direction LR
+        ChatPage["ChatPage"] ~~~ ClassPage["ClassPage"]
+        StudentsPage["StudentsPage"] ~~~ ExamPage["ExamPage"]
+        DiagnosisPage["DiagnosisPage"] ~~~ OcrPage["OcrPage"]
+        OcrSheetsPage["OcrSheetsPage"] ~~~ LoginPage["LoginPage"]
+    end
+    subgraph COMPS["组件层 components/"]
+        direction LR
+        CHAT_C["chat 组件<br/>MessageList ToolCard<br/>审批卡片 内联面板<br/>变式浏览器 ContextMeter"]
+        UI_C["ui 组件<br/>Button Card Modal Table<br/>Tabs EChart StatCard"]
+        MD_C["化学渲染<br/>ChemMd QuestionMd<br/>AnswerMd OptionsRow"]
+    end
+    subgraph LIB["lib 层"]
+        direction LR
+        SSE["agent-sse 流式协议"]
+        API["api 封装 JWT 管理"]
+        FMT["chem-format 化学式格式化"]
+    end
+    subgraph STACK["技术栈"]
+        direction LR
+        REACT["React 19 + TS"] ~~~ ANTD["antd 6"]
+        VITE["Vite 8 代码分割"] ~~~ TW["Tailwind 4 设计令牌"]
+        ECH["ECharts 学情图表"] ~~~ KATEX["KaTeX 公式渲染"]
+    end
+    ROUTES --> PAGES
+    PAGES --> COMPS
+    COMPS --> LIB
+    STACK -.-> PAGES
+</div>
+<div class="notes"><strong>说明：</strong>2026 年前端升级为 React 教师端 SPA：React 19 + antd 6 + Vite 8 + TypeScript + Tailwind CSS 4，8 个路由覆盖登录与教学全流程，路由级代码分割（echarts/katex 不进首屏包）。出题工作台（/exam）以 Tab 形式包含智能出题/题库管理/历史考试库/考试列表；Agent 工作台（/chat）独占视口，通过 SSE 协议支持流式文本、工具卡片、内联面板（题目卡片/诊断报告）、审批卡片（request_approval）、上下文计量器（ContextMeter）与变式浏览器。旧 Vue 3 CDN 出题工作台已归档至 frontend/legacy/teacher/（exam-v2.html 等 6 页面，经 /legacy 路径只读访问，仅供对照/回滚）。</div>
+</div>
+
+<!-- 图18: 知识图谱与向量检索架构 -->
+<div class="diagram-section s18">
+<span class="section-badge">图 18</span>
+<h2>知识图谱与向量检索架构</h2>
+<p class="desc">多源数据加载 - 知识图谱构建 - ChromaDB 向量索引 - 语义检索 - RAG 上下文注入 - 多场景消费</p>
+<div class="mermaid">
+flowchart TB
+    subgraph Sources["数据源层"]
+        direction LR
+        JSON["250道历史真题 JSON文件 按年份地区组织"] ~~~ KP_JSON["50个知识点定义 JSON文件 含层级关系"] ~~~ PUBCHEM["PubChem 外部数据源 CID关联 字段占位"]
+    end
+
+    subgraph Processing["数据处理层"]
+        direction LR
+        PARSE["PDF解析 MinerU引擎 提取题目文本和化学式"] --> NORM["化学式标准化 LaTeX格式统一 mhchem规范"]
+        NORM --> TAG["知识点自动标注 44个关键词映射 难度分级"] --> CHUNK["文本分块 按题目独立分块 保留选项和答案结构"]
+    end
+
+    subgraph Storage["双层存储"]
+        direction LR
+        FILE_STORE["文件存储 JSON格式 按地区年份试卷三级目录"]
+        VECTOR_STORE["向量存储 ChromaDB 集合 exam_questions"]
+    end
+
+    subgraph IndexBuild["向量索引构建流程"]
+        direction LR
+        EMBED["文本嵌入生成 dashscope text-embedding-v3"] --> UPSERT["向量写入 ChromaDB 按知识点标签去重"]
+        UPSERT --> STARTUP["应用启动时全量重建索引"]
+        UPSERT --> INCR["增量更新 保存新题时同步追加向量"]
+    end
+
+    subgraph Retrieval["检索策略 2026-08 升级"]
+        direction LR
+        Q["用户查询"] --> L1["第一层 向量语义召回<br/>ChromaDB 余弦相似度 默认主路径"]
+        L1 -->|"TopK 结果"| L2["第二层 结构化过滤<br/>知识点/题型/年份 按需筛选"]
+        L2 -->|"结果不足"| L3["第三层 联网搜索 MiMo 联网模式 补充外部知识"]
+        L3 --> L3_OK["外部知识源补充 标注来源避免编造"]
+    end
+
+    subgraph RAG["RAG上下文组装"]
+        direction LR
+        L1_OK --> ASSEMBLE["组装检索结果 格式化题目内容 选项 答案 解析"]
+        L2_OK --> ASSEMBLE
+        L3_OK --> ASSEMBLE
+        ASSEMBLE --> INJECT["注入 LLM 提示词 作为检索上下文"]
+        INJECT --> VERIFY["来源校验 反向验证是否编造真题 标注匹配来源"]
+    end
+
+    subgraph Consumers["消费场景"]
+        direction LR
+        GEN_Q["AI出题 变式题参考"] ~~~ EXAM_S["真题搜索 历史题目浏览"]
+        TUTOR["辅导对话 判例参考"] ~~~ SIM["相似题推荐 举一反三"]
+    end
+
+    Sources --> Processing
+    Processing --> Storage
+    FILE_STORE --> EMBED
+    UPSERT --> VECTOR_STORE
+    Storage --> IndexBuild
+    IndexBuild --> Retrieval
+    Retrieval --> RAG
+    RAG --> Consumers
+</div>
+<div class="notes"><strong>说明：</strong>知识图谱系统支撑 ChemAI 的全部内容检索需求。数据源层整合 250 道历年真题 JSON、50 个知识点定义；PubChem 仅在知识图谱服务中预留 cid 字段（当前全部为 None，未真正集成外部数据）。数据处理层通过 MinerU PDF 解析、化学式 LaTeX 标准化、44 个关键词自动标注知识点和难度分级。双层存储中文件存储保持原始 JSON，ChromaDB 向量存储支持语义检索。2026-08 升级：嵌入从 MD5 伪向量切换为 dashscope text-embedding-v3 API（维度 1024，失败时回退 MD5 伪嵌入），检索默认走向量语义召回再结构化过滤；索引在应用启动时全量构建，保存新题（save_to_bank / QuestionBankService）时同步增量追加向量。RAG 上下文组装包含来源校验机制。消费场景覆盖 AI 出题、真题搜索、辅导对话和相似题推荐。</div>
+</div>
+
+<!-- 图19: 错题强化训练子系统 -->
+<div class="diagram-section s19">
+<span class="section-badge">图 19</span>
+<h2>错题强化训练子系统</h2>
+<p class="desc">四维变式题生成 - 训练会话管理 - 四级结果分析 - ReviewTask 关联</p>
+<div class="mermaid">
+flowchart TD
+    WL["错题列表 学生做错的题目"] --> GEN["变式题生成 Variant Generator"]
+    GEN --> D1["维度1 数值变式 改变计算参数"]
+    GEN --> D2["维度2 物质替换 替换反应物产物"]
+    GEN --> D3["维度3 选项重组 调整选项顺序内容"]
+    GEN --> D4["维度4 题干改写 变换表述方式"]
+    D1 --> SESSION["创建训练会话 TrainingSession"]
+    D2 --> SESSION
+    D3 --> SESSION
+    D4 --> SESSION
+    SESSION --> ANSWER["学生逐题作答"]
+    ANSWER --> SUBMIT["提交答案"]
+    SUBMIT --> ANALYSIS["四级结果分析"]
+    ANALYSIS --> T1["等级1 全对掌握 无需再练"]
+    ANALYSIS --> T2["等级2 部分正确 降低难度再练"]
+    ANALYSIS --> T3["等级3 完全错误 重新学习"]
+    ANALYSIS --> T4["等级4 未作答 标记为跳过"]
+    T2 --> WL
+    T3 --> WL
+    WL -.-> RT["关联 ReviewTask 间隔复习系统"]
+    SESSION -.-> RT
+</div>
+<div class="notes"><strong>说明：</strong>错题强化训练是自适应练习的重要子模块。系统从学生错题列表出发，通过变式题生成器在四个维度（数值、物质、选项、题干）上生成与原题相似但不同的变式题，避免学生死记答案。训练会话记录每道变式题的作答情况，提交后触发四级结果分析。未掌握的题重新加入错题列表形成闭环。训练会话与 ReviewTask 间隔复习系统联动，确保错题得到周期性巩固。</div>
+</div>
+
+<!-- 图20: 通知系统 + LMS 集成架构 -->
+<div class="diagram-section s20">
+<span class="section-badge">图 20</span>
+<h2>通知系统 + LMS 集成架构</h2>
+<p class="desc">站内信已实现 - 外部渠道规划中 - LMSConnector 面向对象类层次结构</p>
+<div class="mermaid">
+flowchart TD
+    subgraph TYPES["通知类型"]
+        direction LR
+        N1["考试发布通知"] ~~~ N2["成绩更新通知"] ~~~ N3["学情预警提醒"]
+        N4["家长周报推送"] ~~~ N5["每日练习提醒"]
+    end
+    subgraph CH["通知渠道 - 当前实现"]
+        direction LR
+        SYS["系统站内信 DB存储<br/>ParentNotification 已实现"]
+        PLAN["钉钉/企业微信/Telegram<br/>SFTP/Webhook 规划未实现"]
+    end
+    subgraph LMS["LMSConnector 类层次结构"]
+        direction LR
+        BASE["GenericLMSConnector 基类"] --> DT_CON["DingTalkConnector"]
+        BASE --> WC_CON["WeComConnector"]
+        BASE --> LTI_CON["LTI13Connector"]
+        BASE --> WH_SVC["WebhookService"]
+    end
+    TYPES -.-> CH
+    CH -.-> LMS
+</div>
+<div class="notes"><strong>说明：</strong>通知服务当前仅实现站内信渠道：通知写入 ParentNotification 表（含确定性去重 ID、幂等投递），家长端经 GET /api/parent/notifications 查询；钉钉、企业微信、Telegram、SFTP、Webhook 等外部渠道为规划项（代码骨架未接线）。5 种通知类型（考试发布、成绩更新、学情预警、家长周报、每日练习）均走站内信落库。LMSConnector 采用面向对象基类继承设计：GenericLMSConnector 定义通用 REST 接口（send_assignment / get_student_scores / sync_users，HMAC 签名），DingTalkConnector / WeComConnector / LTI13Connector 为子类骨架，WebhookService 提供回调分发；经 /api/integration 端点对外暴露。</div>
+</div>
+
+<!-- 图21: MCP 工具服务器架构 -->
+<div class="diagram-section s21">
+<span class="section-badge">图 21</span>
+<h2>MCP 工具服务器架构</h2>
+<p class="desc">MCP 工具服务器 16 工具 · 3 标准端点 · 与 Agent 42+5 工具共享核心、各有专属</p>
+<div class="mermaid">
+flowchart LR
+    subgraph CALLERS["调用方"]
+        direction LR
+        EXT["外部系统 / 集成方"]
+        AGT["Agent 推理循环"]
+    end
+
+    subgraph MCP_CH["MCP 工具服务器 · 16 个工具"]
+        direction TB
+        E["3 个标准端点<br/>工具清单 · 调用工具 · 指定工具"]
+        M_CORE["共享核心工具<br/>出题 · 诊断 · 批改 · 练习"]
+        M_ONLY["MCP 专属工具<br/>错题训练 · 复习 · 预警 · 通知"]
+        E --> M_CORE
+        E --> M_ONLY
+    end
+
+    subgraph AG_CH["Agent 工具层 · 42 领域 + 5 浏览器"]
+        direction TB
+        A_CORE["共享核心工具<br/>出题 · 诊断 · 批改 · 练习"]
+        A_ONLY["Agent 专属工具<br/>班级管理 · 辅导 · 记忆 · 浏览器"]
+    end
+
+    EXT --> E
+    AGT --> A_CORE
+    AGT --> A_ONLY
+    A_CORE -.->|"同一批核心工具"| M_CORE
+</div>
+<div class="notes"><strong>说明：</strong>MCP（Model Context Protocol）工具服务器对外暴露 16 个工具（答题卡识别、出题、变式、错题查询、训练、复习、班级/学生统计、预警、通知、诊断、障碍分布、知识点热力图等），由两部分构成：共享核心工具（出题、诊断、批改、练习，与 Agent 工具层是同一批实现）+ MCP 专属工具（错题训练、复习管理、预警查询、通知推送，仅供外部系统通过 MCP 协议调用，不在 Agent 对话中使用）。3 个标准端点（GET /tools 工具清单、POST /call 调用工具、POST /tools/{name} 指定工具）遵循 MCP 协议规范，是外部系统访问的唯一入口。Agent 工具层另有班级管理、辅导、记忆、文件系统、Shell、任务规划、浏览器等专属工具。两个工具层通过共享服务底座（OCR/解析、LLM、题库、批改训练、通知预警）保持能力一致。</div>
+</div>
+
+<!-- 图22: 评测体系架构 -->
+<div class="diagram-section s22">
+<span class="section-badge">图 22</span>
+<h2>评测体系架构</h2>
+<p class="desc">双轨评测 - pytest 581 个确定性测试 + 70 个 LLM-judge 场景 - CI 门控矩阵</p>
+<div class="mermaid">
+flowchart TD
+    subgraph PYRAMID["评测体系 — 双轨结构"]
+        subgraph L1["确定性测试 pytest（tests/ + evals/ + chem_skills/）共 581 个"]
+            direction LR
+            B1["单元测试 工具/护栏/引擎"] ~~~ B2["功能测试 API/服务/权限"]
+            B3["边界与异常 回归"] ~~~ B4["配平/间隔复习/OCR/错题训练"] ~~~ B5["文件系统/Shell 沙箱隔离"]
+        end
+        subgraph L2["LLM 评判场景评测 共 70 个"]
+            direction LR
+            GG1["金标准 30 场景"] ~~~ GG2["LangGraph 7 场景"]
+            GG3["SSE 3 场景"] ~~~ GG4["工作流 15 场景"]
+            GG5["内联面板 6 + 规划 2 + E2E 4 + 归档 3"]
+        end
+    end
+    subgraph EXEC["执行入口"]
+        direction LR
+        E1["场景评测<br/>金标准 / LangGraph / SSE / 工作流 / 边界"] ~~~ E2["评测运行器<br/>单元 / 分类器"]
+    end
+    subgraph GATE["CI门控矩阵"]
+        P0["P0级失败 阻断代码合并"]
+        P1["P1级失败 标记风险告警"]
+        P2["P2级失败 仅通知不阻断"]
+    end
+    L1 --> EXEC
+    L2 --> EXEC
+    EXEC --> P0
+    EXEC --> P1
+    EXEC --> P2
+</div>
+<div class="notes"><strong>说明：</strong>评测体系采用双轨结构。确定性轨：pytest（tests/ + evals/ + chem_skills/）共 581 个测试，覆盖单元、功能、边界、回归与专项（配平/间隔复习/OCR/错题训练/文件系统与 Shell 沙箱隔离/认证数据可见性回归），意图分类器另有独立路由用例。LLM 评判轨：共 70 个场景（金标准 30 / LangGraph 7 / SSE 3 / 工作流 15 / 内联面板 6 / 规划 2 / E2E 4 / 归档 3），以 LLM-as-judge 运行。CI 门控矩阵根据优先级分级处理失败：P0 失败阻断 PR 合并，P1 标记风险，P2 仅通知。</div>
+</div>
+
+<!-- 图23: 桌面应用与 Web 端架构关系 -->
+<div class="diagram-section s23">
+<span class="section-badge">图 23</span>
+<h2>桌面应用与 Web 端架构关系</h2>
+<p class="desc">三款 EXE - pywebview 内嵌 - 代码 100% 复用 Web - PyInstaller 构建管线</p>
+<div class="mermaid">
+flowchart TD
+    subgraph DESKTOP["三款桌面 EXE"]
+        T_EXE["教师端 EXE 窗口 1200x800"]
+        S_EXE["学生端 EXE 窗口 430x900"]
+        P_EXE["家长端 EXE 窗口 430x900"]
+    end
+    subgraph BROWSER_PATH["Web 浏览器路径"]
+        WEB_B["浏览器访问 HTTP SSE 协议"]
+    end
+    subgraph PYWEB["pywebview 内嵌运行时"]
+        WV["pywebview 原生窗口"]
+        UV["内嵌 uvicorn 服务器"]
+        FE["前端 HTML JS CSS 与Web端100%相同"]
+    end
+    subgraph BUILD["PyInstaller 构建管线"]
+        direction LR
+        L1["教师端启动器"] ~~~ L2["学生端启动器"]
+        L3["家长端启动器"] ~~~ PARAMS["打包参数 无控制台/单文件"]
+    end
+    DESKTOP --> PYWEB
+    WV --> UV
+    UV --> FE
+    WEB_B -.->|"同套前端代码"| FE
+    BUILD --> BUILD_OUT["输出 dist 目录"]
+</div>
+<div class="notes"><strong>说明：</strong>桌面应用通过 pywebview 创建原生窗口，内嵌 uvicorn 服务器在本地启动 FastAPI，前端代码与 Web 版 100% 相同（HTML JS CSS 完全复用）。教师端使用 1200x800 的标准窗口，学生端和家长端使用 430x900 的纵向长窗口（模拟手机比例）。PyInstaller 构建管线通过三个启动器入口文件加公共参数配置，打包输出三款独立 EXE。Web 浏览器路径与桌面应用路径共享同一套前端代码库。</div>
+</div>
+
+<!-- 图24: 学情预警引擎架构 -->
+<div class="diagram-section s24">
+<span class="section-badge">图 24</span>
+<h2>学情预警引擎架构</h2>
+<p class="desc">三种预警类型 - 三级严重度 - APScheduler 每日午夜触发 - 通知教师和家长</p>
+<div class="mermaid">
+flowchart TD
+    SCHEDULER["APScheduler 定时任务 每日午夜触发"] --> CHECK["EarlyWarningService 逐学生检查"]
+    CHECK --> W1{"预警类型1 长期未登录"}
+    W1 -->|"连续3天无登录"| SEV["确定严重级别"]
+    CHECK --> W2{"预警类型2 成绩显著下降"}
+    W2 -->|"分数下降大于等于10%"| SEV
+    CHECK --> W3{"预警类型3 错误率异常高"}
+    W3 -->|"错误率大于等于50%"| SEV
+    SEV --> LVL{"三级严重程度判定"}
+    LVL -->|"轻度"| INFO["信息级别 仅记录"]
+    LVL -->|"中度"| WARN_LVL["警告级别 推送教师"]
+    LVL -->|"重度"| CRITICAL["严重级别 推送教师和家长"]
+    INFO --> LOG["创建 WarningLog 数据库记录"]
+    WARN_LVL --> LOG
+    CRITICAL --> LOG
+    LOG --> NOTIFY["触发通知分发"]
+    NOTIFY --> T_N["教师端通知 站内信加钉钉"]
+    NOTIFY --> P_N["家长端通知 微信加Telegram"]
+</div>
+<div class="notes"><strong>说明：</strong>学情预警引擎由 APScheduler 每日午夜自动触发，EarlyWarningService 遍历所有学生进行三项检查：长期未登录（连续 3 天）、成绩显著下降（分数下降大于等于 10%）、错误率异常高（大于等于 50%）。根据严重程度分三级处理：info 仅数据库记录、warn 推送教师端通知、critical 同时推送教师和家长端。WarningLog 持久化记录所有预警历史，支持按时间范围和严重级别筛选查询。</div>
+</div>
+
+<!-- 图25: 考试生命周期 -->
+<div class="diagram-section s25">
+<span class="section-badge">图 25</span>
+<h2>考试生命周期</h2>
+<p class="desc">创建 - 选题 - 发布 - 作答批改 - 完成录入 - 触发诊断</p>
+<div class="mermaid">
+flowchart TD
+    CREATE["创建考试 ExamRecord<br/>考试/练习类型 班级归属"] --> EDIT["工作台选题<br/>题库选择加入 / 历史考试复制"]
+    EDIT --> PUBLISH{"发布校验"}
+    PUBLISH -->|"无题目"| REJECT["拒绝发布<br/>考试没有题目 无法发布"]
+    PUBLISH -->|"有题目"| PUB_OK["发布考试<br/>question_stats.published 标记"]
+    PUB_OK --> ANSWER["学生作答 / LLM 批改<br/>写入 StudentAnswer"]
+    ANSWER --> COMPLETE["完成录入<br/>更新统计 avg_score question_stats"]
+    COMPLETE --> DIAG["自动触发障碍诊断<br/>生成班级统计报告"]
+    DIAG --> DONE["考试闭环完成"]
+</div>
+<div class="notes"><strong>说明：</strong>考试从创建到完成经历 6 个阶段：创建考试记录（ExamRecord，区分考试/练习类型）→ 工作台选题（题库选择加入 或 历史考试复制）→ 发布（校验有题目，无题目拒绝发布；发布状态以 question_stats JSON 中的 published / published_at 字段标记）→ 学生作答与 LLM 批改（写入 StudentAnswer）→ 完成录入（更新平均分与错题统计）→ 自动触发班级障碍诊断并生成统计报告。注：设计文档中的五状态状态机（草稿/编辑/发布/进行中/已完成）未落地，ExamRecord 无独立状态字段，发布状态以 JSON 标记实现。</div>
+</div>
+
+<!-- 图26: 上下文管理与记忆管理架构 -->
+<div class="diagram-section s26">
+<span class="section-badge">图 26</span>
+<h2>上下文管理与记忆管理架构</h2>
+<p class="desc">三层上下文裁剪 - LangGraph SqliteStore 长期记忆 - 诊断写回</p>
+<div class="mermaid">
+flowchart TD
+    subgraph CTX["Context Manager 三层上下文裁剪"]
+        KEEP["保留层 最近6条消息始终保留"]
+        KW_MATCH["关键词匹配层 语义相关消息保留 最多10条"]
+        SUMM["LLM总结层 30条(15轮)时触发总结 丢弃原始"]
+    end
+    subgraph MEM["运行时记忆"]
+        CKPT_M["LangGraph Checkpoint 对话状态"]
+        STORE_M["LangGraph SqliteStore 长期记忆<br/>诊断历史 学习计划 教师偏好"]
+        WM["工作记忆 最近20轮"]
+    end
+    subgraph STOR["持久化存储"]
+        CKPT["检查点存储 Agent对话检查点"]
+        STORE_DB["业务库 学生障碍画像 学情数据"]
+        MEM_FILES["chemistry_memory 文件系统 学情历史"]
+    end
+    subgraph DIAG_WB["诊断写回机制"]
+        UPSERT["诊断结果写回 SqliteStore 尽力更新"]
+        AGG["聚合更新学生障碍画像"]
+    end
+    CTX --> MEM
+    WM --> CKPT
+    STORE_M --> STORE_DB
+    STORE_DB --> UPSERT
+    UPSERT --> AGG
+    KEEP -.-> WM
+    KW_MATCH -.-> CKPT_M
+    SUMM -.-> STORE_M
+</div>
+<div class="notes"><strong>说明：</strong>上下文管理器采用三层裁剪策略避免上下文窗口溢出（2026-08 升级，替代原硬截断 30 条）：最近 6 条消息始终保留，关键词匹配保留含学生/诊断/考试数据的消息（上限 10 条），达到 30 条（约 15 轮）时触发 LLM 摘要后丢弃原始消息。记忆架构升级为 LangGraph SqliteStore（chemai_store.db，内置 sqlite-vec 语义搜索）：保存学生诊断历史、学习计划、教师偏好，对话开始加载画像，Agent 记忆工具（memory_student_get / memory_teacher_get）查询历史；工作记忆保留最近 20 轮交互，检查点存储保存对话状态。诊断写回：diagnose_barrier 完成后自动将结果写入 SqliteStore，并聚合更新学生障碍画像；chemistry_memory 文件系统按学生/班级/教师目录保存学情历史并建立 FTS5 索引（跨会话搜索为预留能力）。</div>
+</div>
+
+<!-- 图27: 质量自改进闭环 -->
+<div class="diagram-section s27">
+<span class="section-badge">图 27</span>
+<h2>质量自改进闭环 — AI 自我进化系统</h2>
+<p class="desc">指标采集 → 分析 → 策略决策 → 执行改进 · 反馈闭环</p>
+<div class="mermaid">
+flowchart TB
+    subgraph DATA_SRC["数据采集源 · 四类指标"]
+        direction LR
+        R["题目审核"]
+        A["答题数据"]
+        L["练习效果"]
+        E["考试成绩"]
+    end
+
+    subgraph COLLECT["指标收集器"]
+        direction TB
+        EVT["事件钩子<br/>审核 / 作答 / 练习 / 考试 完成时触发"]
+        RC["指标记录<br/>JSONL 文件 · 时间窗口查询"]
+        EVT --> RC
+    end
+
+    subgraph ANALYZE["分析引擎"]
+        direction LR
+        PAT["模式识别"]
+        TREND["趋势分析"]
+        ANOM["异常检测"]
+    end
+
+    subgraph STRATEGY["策略控制器"]
+        direction TB
+        RULES["4 条预设规则<br/>通过率过低 · 难度偏差过大<br/>提升不足 · 组合良好"]
+        REQ["人工调整申请"]
+        APPR["教师审批"]
+        RB["策略回滚"]
+        REQ --> APPR
+    end
+
+    subgraph EXEC["执行层"]
+        direction LR
+        PM["Prompt 版本管理<br/>自动改进生成"]
+        KP["知识点权重<br/>动态调整"]
+        REL["指标发布<br/>记录生效"]
+    end
+
+    R --> EVT
+    A --> EVT
+    L --> EVT
+    E --> EVT
+    RC --> PAT
+    RC --> TREND
+    RC --> ANOM
+    PAT --> RULES
+    TREND --> RULES
+    ANOM --> RULES
+    RULES --> PM
+    RULES --> KP
+    APPR --> PM
+    APPR --> KP
+    PM --> REL
+    KP --> REL
+    REL -.->|"反馈闭环 影响下一轮数据"| R
+    RB -.->|"异常时回滚"| RULES
+</div>
+<div class="notes"><strong>说明：</strong>质量自改进系统是 ChemAI 的"自我进化"闭环，实现于 chem_skills/chemistry_improvement 技能模块（metrics_collector 指标采集、analysis_engine 分析、strategy_controller 策略控制、prompt_manager Prompt 版本管理、kp_optimizer 知识点权重优化）。四类指标（题目审核、答题、练习效果、考试成绩）在事件完成时写入指标记录（JSONL 文件），支持按时间窗口（1 天 / 7 天 / 30 天）查询。分析引擎对指标做模式识别、趋势分析和异常检测。策略控制器维护 4 条预设规则（如审核通过率低于 70% 持续 7 天时触发 Prompt 改进、难度偏差超过 0.15 时校准知识点组合），也支持教师手动申请调整并经审批后生效，异常时可回滚策略。执行层通过 Prompt 版本管理生成改进、动态调整知识点权重，发布后反馈闭环影响下一轮数据采集。<strong>状态注：</strong>该模块代码完整但尚未接入 Agent 运行时与主进程（skills_init 仅注册 agent/tools 的 TOOLS），属"已实现未接线"能力，与图 37 的 FTS5 跨会话搜索同级。</div>
+</div>
+
+<!-- 图28: 浏览器 Agent 工具 -->
+<div class="diagram-section s28">
+<span class="section-badge">图 28</span>
+<h2>浏览器 Agent 工具 — Playwright 驱动的 Web 自动化</h2>
+<p class="desc">5 个工具：navigate → read/click/input/screenshot，asyncio.Lock 并发安全，60s 空闲自动清理</p>
+<div class="mermaid">
+flowchart TB
+    subgraph AGENT["Agent 调用层"]
+        direction LR
+        T1["导航工具<br/>打开 URL → 获取标题+文本"] ~~~ T2["读取工具<br/>读取页面/元素文本"]
+        T3["点击工具<br/>点击元素 → 等待0.5s"] ~~~ T4["输入工具<br/>输入框填文本"]
+        T5["截图工具<br/>页面/元素截图 PNG base64"]
+    end
+
+    subgraph POOL["Browser Pool — 模块级单例"]
+        LOCK["并发锁<br/>保证并发安全"]
+        CHROME["Playwright Chromium<br/>headless 模式启动"]
+        PAGE["page 实例<br/>懒加载 + 空闲回收"]
+    end
+
+    subgraph LIFE["生命周期管理"]
+        LAZY["页面实例<br/>首次调用懒启动"]
+        IDLE["空闲超时 60s<br/>自动清理"]
+        CLEAN["空闲回收<br/>关闭页面与浏览器"]
+        LAZY --> IDLE --> CLEAN
+    end
+
+    T1 --> LOCK
+    T2 --> LOCK
+    T3 --> LOCK
+    T4 --> LOCK
+    T5 --> LOCK
+    LOCK --> CHROME
+    CHROME --> PAGE
+    PAGE --> LAZY
+</div>
+<div class="notes"><strong>说明：</strong>浏览器 Agent 工具基于 Playwright 实现，提供 5 个工具：导航（打开 URL 并等待页面加载完成）、读取（读取指定页面元素的文本，截断 8000 字符）、点击（点击元素并等待 0.5s）、输入（清空输入框并填写文本）、截图（PNG 截图，base64 编码返回）。模块级单例模式 + 并发锁保证并发安全，60 秒无操作自动清理浏览器实例。所有工具返回 JSON 格式结果，支持 Agent 工具调用链。</div>
+</div>
+
+<!-- 图29: ChemRender 中间件 -->
+<div class="diagram-section s29">
+<span class="section-badge">图 29</span>
+<h2>ChemRender 中间件 — 化学式 Unicode 自动渲染</h2>
+<p class="desc">HTTP 中间件拦截所有 JSON 响应 → 化学式渲染逻辑 递归转换化学式上下标</p>
+<div class="mermaid">
+flowchart LR
+    subgraph FLOW["请求-响应管线"]
+        direction LR
+        REQ["API Request"] --> HANDLER["Route Handler<br/>返回 JSON Response"] --> MW["ChemRenderMiddleware<br/>Starlette 中间件"] --> CLIENT["Client<br/>化学式已渲染为 Unicode"]
+    end
+
+    subgraph MW_DETAIL["ChemRenderMiddleware 响应处理"]
+        direction TB
+        CT["检查 Content-Type<br/>仅处理 JSON"]
+        READ["读取响应体<br/>数据流 → 字节"]
+        PARSE["解析 JSON 文本<br/>转为数据对象"]
+        RENDER["化学式渲染逻辑<br/>递归遍历数据<br/>将化学式数字→Unicode 下标/上标"]
+        DUMP["重新序列化<br/>更新 content-length"]
+        RET["返回新响应<br/>保留原状态码 + 响应头"]
+    end
+
+    CT --> READ --> PARSE --> RENDER --> DUMP --> RET
+
+    subgraph EX["转换示例"]
+        EX1["H2SO4 → H₂SO₄"] ~~~ EX2["Fe3+ → Fe³⁺"] ~~~ EX3["CO3 2- → CO₃²⁻"]
+    end
+
+    MW_DETAIL -.-> EX
+    REQ --> MW
+</div>
+<div class="notes"><strong>说明：</strong>ChemRenderMiddleware 是 ChemAI 的独特技术亮点。作为 Starlette 中间件，它自动拦截所有 Content-Type 为 JSON 的响应，将其数据解析为 JSON 后递归调用化学式渲染逻辑，将数字转换为 Unicode 下标/上标（如 H2O → H₂O、Fe3+ → Fe³⁺），重新序列化后返回。非 JSON 响应（二进制、HTML、SSE 流）直接透传。如果解析失败则返回原始数据，不中断服务。这确保了前端收到的所有化学式都能正确显示上下标，无需前端额外处理。</div>
+</div>
+
+<!-- 图30: 前端页面路由全景 -->
+<div class="diagram-section s30">
+<span class="section-badge">图 30</span>
+<h2>前端页面路由全景 — React SPA + 三端页面完整导航</h2>
+<p class="desc">React 教师端 8 路由 - legacy 6 页归档 - 学生 8 文件 - 家长 2 页 - 桌面 3 EXE - 各端独立登录</p>
+<div class="mermaid">
+flowchart LR
+    subgraph TEACHER["教师端 React SPA - 8 路由"]
+        direction LR
+        R1["/login 登录"] --- R2["/chat Agent 工作台"] --- R3["/class 班级学情"]
+        R4["/students 学生管理"] --- R5["/exam 出题工作台"] --- R6["/diagnosis 诊断分析"]
+        R7["/ocr 答题卡批改"] --- R8["/ocr-sheets 答题卡批处理"]
+    end
+
+    subgraph LEGACY["教师端 legacy 6 页面（归档）"]
+        direction LR
+        L1["teacher 看板"] --- L2["students 学生管理"] --- L3["ocr 批改"]
+        L4["ocr-sheets 批处理"] --- L5["exam-v2 出题工作台"] --- L6["diagnosis 诊断"]
+    end
+
+    subgraph STUDENT["学生端 Mobile m/ 目录 8 文件"]
+        direction LR
+        S1["index 首页"] --- S2["practice 练习作答"] --- S3["wrong 错题本"] --- S4["review 复习任务"]
+        S5["report 学情报告"] --- S6["login 学生登录"] --- S7["design-v1 设计预览"] --- S8["app.js 逻辑"]
+    end
+
+    subgraph PARENT["家长端 Mobile m/ 目录 2 页面"]
+        direction LR
+        P1["parent 家长看板"] --- P2["parent-login 家长登录"]
+    end
+
+    subgraph DESKTOP["桌面应用 3 个 EXE"]
+        direction LR
+        D1["练习客户端"] --- D2["考试客户端"] --- D3["OCR 工具"]
+    end
+
+    subgraph AUTH["认证入口"]
+        direction LR
+        LOGIN["教师端 React /login<br/>学生端 m/login.html<br/>家长端 m/parent-login.html"] --> JWT["JWT 认证<br/>角色路由分发"]
+    end
+
+    JWT -->|"teacher/admin"| TEACHER
+    JWT -->|"student"| STUDENT
+    JWT -->|"parent"| PARENT
+    DESKTOP -.->|"API 通信"| JWT
+    LEGACY -.->|"只读归档 /legacy"| JWT
+</div>
+<div class="notes"><strong>说明：</strong>前端由四部分组成：教师端主流入口为 React SPA（8 路由：登录、Agent 工作台、班级学情、学生管理、出题工作台、诊断分析、答题卡批改、答题卡批处理）；旧多页教师端 6 页面（Vue CDN 版出题工作台等）归档至 frontend/legacy/ 经 /legacy 只读访问；学生端 Mobile 8 个资源文件（m/ 目录：首页、练习作答、错题本、复习任务、学情报告、登录、设计预览、app.js）与家长端 2 页面（看板 + 独立登录）继续服务；桌面应用 3 个 EXE（练习、考试、OCR 工具）通过 API 与服务端通信。各端使用独立登录页（React /login、m/login.html、m/parent-login.html），登录后按角色分发。</div>
+</div>
+
+<!-- 图31: LLM Provider Fallback 策略 -->
+<div class="diagram-section s31">
+<span class="section-badge">图 31</span>
+<h2>LLM Provider 路由 & Fallback 策略</h2>
+<p class="desc">4 个 Provider 分工：DeepSeek(Agent/网关分类) + MiMo(业务服务主力 联网+图像) + 智谱(GLM-4-Flash) + 通义千问(qwen-turbo)</p>
+<div class="mermaid">
+flowchart TB
+    GW["Gateway 意图分类器<br/>按任务类型选择 Provider"]
+    FALL["降级决策<br/>异常 / 超时 → 下一级"]
+
+    P1["DeepSeek<br/>Agent / 网关推理<br/>deepseek-chat"]
+    P2["MiMo<br/>业务服务主力 · 联网 + 图像<br/>mimo-v2.5"]
+    P3["智谱<br/>辅助推理 · 视觉<br/>GLM-4-Flash · glm-4v"]
+    P4["通义千问<br/>最后兜底 · 图片文字提取<br/>qwen-turbo · qwen-vl-ocr"]
+
+    GW -->|"Agent / 分类推理"| P1
+    GW -->|"联网搜索 / 图像"| P2
+    GW -->|"辅助推理"| P3
+    GW -->|"最后兜底"| P4
+
+    P1 -.->|"异常 / 超时"| FALL
+    P2 -.->|"异常 / 超时"| FALL
+    P3 -.->|"异常 / 超时"| FALL
+    FALL -->|"降级"| P2
+    FALL -->|"降级"| P3
+    FALL -->|"降级"| P4
+</div>
+<div class="notes"><strong>说明：</strong>系统现有 4 个 LLM Provider，职责分工如下：DeepSeek 承担 Agent 层推理（Gateway 意图分类、Agent 规划与技能内 LLM 调用），实现于 DeepSeek Provider（httpx 直连 OpenAI 兼容接口）与护栏模块的模型工厂。MiMo-V2.5 为业务服务主力（联网搜索 + 图像理解）。智谱 GLM-4-Flash 作辅助推理与视觉（glm-4v），通义千问 qwen-turbo / qwen-vl-ocr 作最后兜底与图片文字提取。Gateway 根据任务类型选择初始 Provider，异常或超时沿 failover 链降级。</div>
+</div>
+
+<!-- 图32: Planner 规划器 -->
+<div class="diagram-section s32">
+<span class="section-badge">图 32</span>
+<h2>Planner 规划器 — 教学目标拆解引擎</h2>
+<p class="desc">将复杂教学目标分解为最多 6 步的 DAG 执行计划，支持步骤间依赖引用和自动 fallback</p>
+<div class="mermaid">
+flowchart TB
+    subgraph INPUT["输入"]
+        GOAL["用户目标<br/>如「出10道盐类水解题并诊断」"]
+        SKILLS["可用技能列表<br/>出题、障碍诊断等"]
+    end
+
+    subgraph CORE["PlanGenerator 核心"]
+        PROMPT["规划提示模板<br/>「你是化学教研助手的目标拆解器」<br/>最多 6 步 · 禁止循环依赖"]
+        LLM["调用 LLM (DeepSeek)<br/>低温度 低随机性"]
+        PARSE["解析<br/>提取计划（目标+步骤）"]
+        VALID["步骤校验<br/>技能名 · 去重 · 去循环<br/>去未知技能 · 上限 6 步"]
+        FALL["单步兜底<br/>关键词匹配最佳技能"]
+    end
+
+    subgraph OUTPUT["输出 Plan"]
+        direction TB
+        STEP["PlanStep 计划步骤<br/>技能 + 参数 + 前置依赖"]
+        RESOLVE["依赖注入<br/>前序步骤输出"]
+    end
+
+    GOAL --> PROMPT
+    SKILLS --> PROMPT
+    PROMPT --> LLM --> PARSE --> VALID
+    VALID -->|"成功"| STEP
+    VALID -->|"失败/空计划"| FALL
+    FALL --> STEP
+    STEP --> RESOLVE
+</div>
+<div class="notes"><strong>说明：</strong>Planner 是 Agent 层的计划组件，负责将复杂教学目标（如"出 10 道盐类水解题并诊断学生障碍"）分解为结构化的多步执行计划。PlanGenerator 通过 LLM 调用生成最多 6 步的 Plan，每步指定技能、参数与依赖关系（DAG）。依赖注入支持模板引用前序步骤的输出。自动检测并移除循环依赖和自引用。如果 LLM 生成失败或计划为空，通过关键词匹配兜底到单步计划。</div>
+</div>
+
+<!-- 图33: 定时任务完整架构 -->
+<div class="diagram-section s33">
+<span class="section-badge">图 33</span>
+<h2>定时任务完整架构 — APScheduler 三任务调度</h2>
+<p class="desc">每日练习 8:00 + 学情预警 午夜 + OCR 轮询 每 5s</p>
+<div class="mermaid">
+flowchart TB
+    subgraph SCHED["APScheduler 调度器"]
+        direction TB
+
+        subgraph J1["Job 1: 每日练习推送 — cron 8:00"]
+            J1A["每日练习任务"]
+            J1B["遍历所有已审核学生"]
+            J1C["生成每日练习<br/>弱项知识点 · 10 题中等难度"]
+            J1D["发送 ParentNotification<br/>家长端练习通知 + 复习提醒"]
+            J1A --> J1B --> J1C --> J1D
+        end
+
+        subgraph J2["Job 2: 学情预警检查 — cron 午夜"]
+            J2A["学情预警任务"]
+            J2B["检查异常模式<br/>连续退步 / 长期不活跃 / 障碍加重"]
+            J2C["创建预警记录 → 通知教师+家长"]
+            J2A --> J2B --> J2C
+        end
+
+        subgraph J3["Job 3: OCR 任务轮询 — interval 5s"]
+            J3A["OCR 任务轮询"]
+            J3B["查询待处理 OCR 任务<br/>取最早一条"]
+            J3C["状态置为处理中 → 调用 OCR 引擎<br/>进度递增"]
+            J3D["状态置为完成/失败<br/>写入识别结果与学生信息"]
+            J3A --> J3B --> J3C --> J3D
+        end
+    end
+
+    subgraph STORAGE["数据依赖"]
+        DB["业务库 SQLite<br/>SQLAlchemy ORM"]
+        OCR_DB["OCRTask 表<br/>ocr_tasks"]
+    end
+
+    J1 --> DB
+    J2 --> DB
+    J3 --> OCR_DB
+</div>
+<div class="notes"><strong>说明：</strong>三定时任务由 APScheduler 管理。任务一（每日练习任务）每日 8:00 执行，为所有已审核学生生成个性化每日练习（根据学生障碍画像推断弱项知识点，10 题中等难度），并向绑定家长推送通知和复习提醒。任务二（学情预警任务）午夜执行，调用预警服务检查学情异常（连续退步、不活跃、障碍加重等）。任务三（OCR 任务轮询）每 5 秒轮询 OCR 任务表，顺序处理待处理任务（状态流转 待处理→处理中→完成/失败，进度递增），支持百度教育 OCR 与 MinerU 双引擎（PP-OCRv6 可选）。注：app/jobs/ 下的 Celery 任务（celery_app/handlers/tasks）已定义但未接入主进程，为异步队列预留；当前全部定时任务由 APScheduler 进程内驱动。</div>
+</div>
+
+<!-- 图34: 多租户数据隔离 -->
+<div class="diagram-section s34">
+<span class="section-badge">图 34</span>
+<h2>多租户数据隔离 — School → Grade → Class 层级可见性</h2>
+<p class="desc">JWT 自实现认证 + 角色权限矩阵 + 数据行级过滤</p>
+<div class="mermaid">
+flowchart TB
+    subgraph AUTH_FLOW["认证流程"]
+        direction LR
+        LOGIN["login.html → /api/auth/login"]
+        JWT_C["JWT 签发<br/>纯 Python HS256"]
+        PAY["JWT payload 携带 用户/角色/学校 标识"]
+        VER["JWT 校验<br/>每个请求验证签名+过期时间"]
+        LOGIN --> JWT_C --> PAY --> VER
+    end
+
+    subgraph MID["认证中间件"]
+        direction LR
+        AUTH_MW["认证中间件<br/>提取 JWT → 注入请求状态<br/>用户/角色/学校标识"]
+        PERM_MW["权限校验<br/>检查角色对应资源的操作权限"]
+        AUTH_MW --> PERM_MW
+    end
+
+    subgraph ROLES["五角色权限矩阵"]
+        direction TB
+        R1["admin · 全部管理 + 分析"]
+        R2["教务管理员 · 年级/班级/学生管理"]
+        R3["学科组长 · 全部只读 + 分析"]
+        R4["teacher · 本校→本年级→本班 只读"]
+        R5["student · 仅自己的数据"]
+    end
+
+    subgraph ISOLATION["数据行级隔离 · 可见范围逐级收窄"]
+        direction TB
+        SCD["学校级隔离<br/>按学校标识过滤"]
+        GRD["年级级隔离<br/>按年级标识过滤"]
+        CLD["班级级隔离<br/>按班级标识过滤"]
+        SCD --> GRD --> CLD
+    end
+
+    VER --> AUTH_MW
+    PERM_MW --> ROLES
+    R1 --> SCD
+    R2 --> SCD
+    R3 --> SCD
+    R4 --> SCD
+    R4 --> GRD
+    R4 --> CLD
+    R5 --> CLD
+</div>
+<div class="notes"><strong>说明：</strong>多租户隔离通过三层机制实现。认证层使用纯 Python 实现的 JWT（HS256 签名，24h 过期），不依赖外部库。中间件在每次请求时验证 token 并将 用户/角色/学校标识 注入请求状态。五角色权限矩阵定义了 admin（全部 CRUD）、教务管理员（年级/班级/学生管理）、学科组长（全只读+分析）、teacher（本校范围内只读）、student（仅自己的数据）。数据查询层通过 学校→年级→班级 标识逐级过滤，实现行级数据隔离。</div>
+</div>
+
+<!-- 图35: Conversation 对话管理 -->
+<div class="diagram-section s35">
+<span class="section-badge">图 35</span>
+<h2>Conversation 对话管理 — 基于 SQLite Checkpoint 的全生命周期</h2>
+<p class="desc">5 个 REST API：列表（按 persona 过滤）→ 历史 → 新建 → 删除 → 重置</p>
+<div class="mermaid">
+flowchart TB
+    subgraph APIS["REST API — /chat/*"]
+        direction TB
+        API1["列出对话列表<br/>按角色前缀过滤"]
+        API2["获取对话历史<br/>兼容两种消息格式"]
+        API3["新建对话<br/>返回对话 ID"]
+        API4["删除对话<br/>清除检查点与写入记录"]
+        API5["重置对话状态（清空内存 + 重置检查点）"]
+    end
+
+    subgraph STORAGE["存储层"]
+        direction LR
+        CKPT["检查点库<br/>SQLite 数据库"]
+        TBL1["checkpoints 表<br/>会话ID + 检查点数据"]
+        TBL2["writes 表<br/>会话ID + 写入记录"]
+        MEM["内存字典<br/>活跃对话实例"]
+    end
+
+    subgraph FORMAT["消息格式兼容"]
+        DICT["dict 格式<br/>角色 + 内容字段"]
+        LC["LangChain 对象<br/>类型/内容属性"]
+        START["初始通道<br/>初始状态兜底"]
+    end
+
+    API1 --> CKPT
+    API2 --> CKPT
+    API3 --> MEM
+    API4 --> CKPT
+    API5 --> MEM
+    CKPT --> TBL1
+    CKPT --> TBL2
+    API2 --> FORMAT
+</div>
+<div class="notes"><strong>说明：</strong>Conversation 模块提供 5 个 REST API 管理 Agent 对话的全生命周期。对话列表支持按 角色前缀 过滤，通过直接查询 SQLite checkpoint 数据库的会话ID 实现。消息历史提取兼容三种格式：字典格式、LangChain 对象格式、初始状态。删除操作清除检查点与写入记录两张表。重置操作清空内存中的活跃对话实例并重置 checkpoint 状态。对话 ID 采用前缀加时间戳格式。</div>
+</div>
+
+<!-- 图36: 数据库迁移机制 -->
+<div class="diagram-section s36">
+<span class="section-badge">图 36</span>
+<h2>数据库迁移机制 — Alembic 版本管理</h2>
+<p class="desc">Model 变更 → autogenerate 生成脚本 → 版本链顺序应用 / 回滚</p>
+<div class="mermaid">
+flowchart TB
+    subgraph SRC["变更源头"]
+        MODELS["SQLAlchemy Model<br/>数据模型定义"]
+    end
+
+    subgraph ENGINE["Alembic 迁移引擎"]
+        direction TB
+        AUTO["autogenerate 自动生成<br/>对比 Model 与当前库差异"]
+        SCRIPT["迁移脚本<br/>每个版本含 应用 / 回滚"]
+        CFG["配置桥接<br/>Model 元数据 + 数据库配置"]
+        AUTO --> SCRIPT
+        CFG --> AUTO
+    end
+
+    subgraph CHAIN["迁移版本链 · 有序"]
+        direction TB
+        V1["版本 v1<br/>初始建表"]
+        V2["版本 v2<br/>新增 OCR 业务表"]
+        V1 --> V2
+    end
+
+    subgraph DB_STATE["目标数据库"]
+        DB["业务库 SQLite<br/>alembic_version 记录当前版本"]
+    end
+
+    MODELS --> AUTO
+    SCRIPT --> CHAIN
+    CHAIN -->|"顺序应用 升级到最新"| DB
+    DB -.->|"回滚上一版本"| CHAIN
+</div>
+<div class="notes"><strong>说明：</strong>使用 Alembic 管理数据库 schema 版本演进。数据模型（SQLAlchemy Model）是变更源头：模型定义修改后，Alembic 的 autogenerate 对比模型元数据与当前数据库结构的差异，自动生成有序的迁移脚本，每个脚本定义应用（升级）与回滚两个方向。脚本按版本链顺序应用到目标数据库，alembic_version 表记录当前所处版本，支持升级到最新或回滚上一版本。当前版本链含两个版本：初始建表（73a1aa429490）、新增 OCR 业务表（07c4ef8c648d）。注：应用启动（app.main startup）实际通过 Base.metadata.create_all 直接建表/校验表结构，Alembic 脚本为 schema 演进预留，运行时未自动执行 alembic upgrade。</div>
+</div>
+
+<!-- 图37: 双层记忆架构 -->
+<div class="diagram-section s37">
+<span class="section-badge">图 37</span>
+<h2>双层记忆架构 — SqliteStore 长期记忆 与 chemistry_memory 文件系统</h2>
+<p class="desc">运行时对话记忆（Checkpoint + 画像加载）⇄ 持久化学情记忆（业务库 + SqliteStore + chemistry_memory 文件）· 读写双通道</p>
+<div class="mermaid">
+flowchart TB
+    subgraph EVENTS["业务事件 · 写路径"]
+        EVT["诊断 / 考试 / 练习 完成"]
+    end
+
+    subgraph RUNTIME["运行时层 · 单次对话"]
+        direction TB
+        LOAD["对话开始 加载画像"]
+        SP["学生画像 Profile 业务库"]
+        WM["工作记忆 最近 20 轮"]
+        STORE_R["SqliteStore 长期记忆<br/>诊断历史 学习计划 偏好"]
+        BUILD["组装 LLM 消息"]
+        LOAD --> SP
+        WM --> BUILD
+        STORE_R --> BUILD
+        SP --> BUILD
+        BUILD -->|"发给 LLM"| LLM["LLM 推理"]
+    end
+
+    subgraph PERSIST["持久化层 · 跨对话"]
+        direction TB
+        DB["业务库 SQLite<br/>学生障碍画像<br/>诊断/计划/偏好"]
+        FILES["chemistry_memory 文件系统<br/>学情历史文件 + FTS5 索引"]
+    end
+
+    subgraph TOOLS["对话中 Agent 记忆工具"]
+        MGET["记忆工具 学生/教师记忆查询"]
+    end
+
+    EVT -->|"① 更新学生画像"| DB
+    EVT -->|"② REST /diagnosis-complete 事件"| FILES
+    DB -->|"③ 读取学生画像"| LOAD
+    MGET -->|"④ 查历史诊断/学习计划/偏好"| DB
+    MGET -.->|"⑤ FTS5 跨会话搜索 · 预留"| FILES
+</div>
+<div class="notes"><strong>说明：</strong>系统存在双层记忆架构。运行时层服务于单次对话：对话开始时从业务库加载学生画像、从 LangGraph SqliteStore（chemai_store.db）加载长期记忆（诊断历史、学习计划、教师偏好，内置 sqlite-vec 语义搜索），工作记忆保留最近 20 轮对话，随后组装成发给 LLM 的消息（对话状态由 Checkpoint 持久化，中断可恢复）。持久化层跨对话复用，分两个存储：业务库 SQLite 保存学生障碍画像与诊断记录/学习计划/教师偏好；chemistry_memory 文件系统按学生/班级/教师目录保存详细学情历史文件，写入时同步建立 FTS5 全文索引。写路径两条：诊断/考试/练习完成后①更新业务库画像、②经 REST /diagnosis-complete 事件写入文件系统；读路径两条：③对话开始加载画像、④对话中 Agent 记忆工具（memory_student_get / memory_teacher_get）查询业务库历史；⑤FTS5 跨会话搜索为预留能力（已实现未接线）。</div>
+</div>
+
+<!-- 图38: LaTeX 化学公式标准化 -->
+<div class="diagram-section s38">
+<span class="section-badge">图 38</span>
+<h2>chemistry_parser LaTeX 标准化引擎</h2>
+<p class="desc">MinerU 解析输出 → LaTeX 标准化引擎 → Unicode 化学式</p>
+<div class="mermaid">
+flowchart TB
+    subgraph INPUT["输入源"]
+        direction LR
+        MU["MinerU 解析引擎<br/>PDF/图片 → LaTeX 格式"]
+        RAW["原始 LaTeX 片段<br/>如 \\ce{H2SO4}、Ca(OH)2"]
+        MU --> RAW
+    end
+
+    subgraph ENGINE["LaTeX 标准化引擎 · 五类转换"]
+        direction TB
+        SUB["下标转换<br/>_2 → ₂"]
+        SUP["上标转换<br/>^2+ → ²⁺"]
+        CE["化学式宏包<br/>\\ce{...}"]
+        FRAC["分式标准化<br/>\\frac{...}{...}"]
+        ARROW["化学反应箭头<br/>→ · ⇌ · ↑ · ↓"]
+    end
+
+    subgraph OUTPUT["输出"]
+        direction LR
+        TXT["纯文本 Unicode 化学式<br/>H₂SO₄ · Fe³⁺ · CO₃²⁻"]
+        JSON["JSON 结构<br/>公式 + 归一化 + 展示"]
+        TXT --> JSON
+    end
+
+    RAW --> ENGINE
+    ENGINE --> TXT
+    JSON --> FRONT["ChemRender 中间件 → 前端显示"]
+</div>
+<div class="notes"><strong>说明：</strong>LaTeX 标准化引擎负责将 MinerU 解析出的 LaTeX 化学公式转换为 Unicode 纯文本。核心转换逻辑：数字下标映射（0-9 → ₀-₉）、上标映射（数字+正负号 → 上标 Unicode）。支持化学式宏包和分式标准化。完整管线：OCR 图片 → MinerU 解析为 LaTeX → 标准化引擎转 Unicode → 中间件二次渲染 → 前端渲染显示。</div>
+</div>
+
+<!-- 图39: MCP 工具与 Agent 工具映射 -->
+<div class="diagram-section s39">
+<span class="section-badge">图 39</span>
+<h2>MCP 工具 ↔ Agent 工具 双层映射关系</h2>
+<p class="desc">MCP（外部协议通道）与 Agent（内部推理通道）各自注册工具 · 双通道同源复用共享服务底座</p>
+<div class="mermaid">
+flowchart TB
+    subgraph ENTRY["调用入口 · 双通道"]
+        direction LR
+        EXT["外部客户端<br/>第三方 / 集成方"]
+        AGT["Agent 推理循环"]
+    end
+
+    subgraph MCP["MCP 工具系统 · 外部协议通道"]
+        direction LR
+        MCP_API["3 个标准端点<br/>工具清单 · 调用 · 详情"]
+        MCP_REG["16 个业务工具<br/>答题卡 · 出题 · 诊断<br/>错题 · 训练 · 复习 · 预警 · 通知"]
+        MCP_API --> MCP_REG
+    end
+
+    subgraph AGENT["Agent 工具系统 · 内部推理通道"]
+        direction LR
+        AG_REG["工具元数据<br/>42 领域 + 5 浏览器工具"]
+        AG_TOOLS["角色过滤后的工具集"]
+        AG_REG --> AG_TOOLS
+    end
+
+    subgraph SHARED["共享服务底座 · 两层工具同源复用"]
+        direction LR
+        S_OCR["OCR / 文档解析"] --- S_LLM["LLM 出题诊断"] --- S_QB["题库检索"] --- S_GRADE["批改 / 训练"] --- S_NOTIFY["通知 / 预警"]
+    end
+
+    EXT --> MCP_API
+    AGT --> AG_REG
+    MCP_REG --> SHARED
+    AG_TOOLS --> SHARED
+</div>
+<div class="notes"><strong>说明：</strong>系统存在两层相互独立的工具系统。MCP Server 通过 3 个标准 REST 端点对外暴露，注册 16 个业务工具（答题卡识别、出题、题目诊断、错题查询、创建训练、提交训练、复习任务、完成复习、触发预警检查、发送通知等），供外部客户端调用。Agent 工具层由工具元数据表管理权限（角色可见范围 + 调用上限），注册 42 个领域工具 + 5 个浏览器工具，供 Agent 推理循环内部调用。两层工具在实现上复用同一批共享服务底座（OCR/解析、LLM、题库、批改训练、通知预警），因此 MCP 的 16 个工具与 Agent 工具在核心能力上同源；Agent 工具层覆盖面更广，额外持有联网搜索、四步引导辅导、记忆读写、文件系统、Shell、任务规划、浏览器自动化等能力。</div>
+</div>
+
+
+<!-- 图40: Agent 工具全集与 Persona 矩阵 -->
+<div class="diagram-section s40">
+<span class="section-badge">图 40</span>
+<h2>Agent 工具全集与 Persona 可见矩阵</h2>
+<p class="desc">42 个领域工具按功能分组 - 5 个浏览器工具无条件附加 - 四角色可见数</p>
+<div class="mermaid">
+flowchart LR
+    subgraph G1["题库与检索 7 个"]
+        T1["search_exam_bank · web_search<br/>show_exam_workbench · save_to_bank<br/>list_banks · delete_bank<br/>generate_questions"]
+    end
+    subgraph G2["辅导与讲解 9 个"]
+        T2["chemistry_tutor · balance_equation<br/>ionic_equation_tutor · stoichiometry_tutor<br/>redox_tutor · equilibrium_tutor<br/>periodic_law_tutor · organic_tutor<br/>simulate_experiment"]
+    end
+    subgraph G3["诊断与练习 9 个"]
+        T3["diagnose_barrier · show_diagnosis<br/>show_students · weekly_report<br/>assign_adaptive_practice<br/>generate_learning_plan · send_learning_plan<br/>generate_parent_report · send_report_to_parent"]
+    end
+    subgraph G4["OCR 与文档解析 8 个"]
+        T4["query_ocr_progress · grade_answer_sheets<br/>save_grading_results · query_batch_grades<br/>list_teacher_exams<br/>parse_chemistry_document<br/>import_question_bank · check_parser_services"]
+    end
+    subgraph G5["记忆与规划 3 个"]
+        T5["memory_student_get · memory_teacher_get<br/>plan_task"]
+    end
+    subgraph G6["文件系统与 Shell 6 个"]
+        T6["read · write · edit<br/>find · grep · bash"]
+    end
+    subgraph G7["浏览器工具 5 个<br/>无条件附加"]
+        T7["navigate · read_page · click<br/>input · screenshot"]
+    end
+    subgraph PERS["Persona 可见矩阵 领域工具数"]
+        direction TB
+        P1["Teacher 35"] ~~~ P2["Student 10"]
+        P3["Tutor 21"] ~~~ P4["Parent 4"]
+    end
+    G1 ~~~ G2 ~~~ G3 ~~~ G4 ~~~ G5 ~~~ G6 ~~~ G7
+    G1 -.-> PERS
+    G2 -.-> PERS
+    G3 -.-> PERS
+    G4 -.-> PERS
+    G5 -.-> PERS
+    G6 -.-> PERS
+</div>
+<div class="notes"><strong>说明：</strong>Agent 工具层共注册 42 个领域工具 + 5 个浏览器工具（TOOLS / TOOL_META 统一维护，每个工具带 personas 角色可见范围与 call_limit 调用上限）。领域工具按功能分 6 组：题库与检索（真题搜索/联网搜索/出题工作台/保存到题库/题库管理/AI 出题）、辅导与讲解（引导式辅导、方程式配平、离子方程式/计量/氧化还原/平衡/元素周期律/有机化学专项辅导、实验模拟）、诊断与练习（障碍诊断/诊断展示/学生列表/周报/布置自适应练习/学习计划生成与发送/家长周报生成与发送）、OCR 与文档解析（批改进度/批改/保存结果/批次成绩/考试列表/文档解析/题库导入/服务检查）、记忆与规划（学生/教师记忆查询、任务规划 plan_task）、文件系统与 Shell（read/write/edit/find/grep/bash，Spec 03 沙箱，工作区外路径需审批）。5 个浏览器工具（Playwright）对所有 persona 无条件附加，故实际可见工具数 = 领域工具 + 5：Teacher 40 / Tutor 26 / Student 15 / Parent 9。</div>
+</div>
+
+
+<p style="text-align:center;color:#94a3b8;margin-top:48px;font-size:13px;">
+  第四部分-产品设计 - 系统架构图集 (共 40 张)
+</p>
+</div>
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'default',
+    securityLevel: 'loose',
+    flowchart: { useMaxWidth: true, htmlLabels: true },
+    sequence: { useMaxWidth: true },
+    state: { useMaxWidth: true },
+    er: { useMaxWidth: true }
+  });
+</script>
+</body>
+</html>

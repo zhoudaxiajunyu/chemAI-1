@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//d/pm/**)",
+      "Read(//d/pm//**)",
+      "Bash(python3:*)",
+      "Read(//c/Program Files/**)",
+      "Bash(ls \"C:\\\\Python\"*)",
+      "Bash(node:*)",
+      "Bash(ls:*)",
+      "Bash(grep -l \"先阅读设计文档\\\\|产品设计/\" *.md)",
+      "Bash(grep -l \"先阅读设计文档\" *.md)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(find D:/开源项目/技能包/OpenSpec-main -maxdepth 3 -type f \\\\\\(-iname SKILL.md -o -iname README.md -o -iname README.txt -o -iname *.md \\\\\\))",
+      "Bash(find D:/开源项目/技能包/graphify-8 -maxdepth 3 -type f \\\\\\(-iname SKILL.md -o -iname README.md -o -iname README.txt -o -iname *.md \\\\\\))",
+      "Bash(find D:/开源项目/技能包/gstack-main -maxdepth 3 -type f \\\\\\(-iname SKILL.md -o -iname README.md -o -iname README.txt -o -iname *.md \\\\\\))",
+      "Bash(find D:/开源项目/技能包/no-mistakes-main -maxdepth 3 -type f \\\\\\(-iname SKILL.md -o -iname README.md -o -iname README.txt -o -iname *.md \\\\\\))",
+      "Bash(find D:/开源项目/技能包/skills-main -maxdepth 3 -type f \\\\\\(-iname SKILL.md -o -iname README.md -o -iname README.txt -o -iname *.md \\\\\\))",
+      "Bash(find D:/开源项目/技能包/strix-main -maxdepth 3 -type f \\\\\\(-iname SKILL.md -o -iname README.md -o -iname README.txt -o -iname *.md \\\\\\))"
+    ]
+  }
+}
