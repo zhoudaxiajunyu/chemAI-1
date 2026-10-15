@@ -87,6 +87,25 @@ def test_tampered_token_401(client):
     assert r.status_code == 401
 
 
+def test_lowercase_bearer_scheme_accepted(client):
+    # RFC 7235 §2.1：auth-scheme 大小写不敏感，"bearer xxx" 必须被接受
+    token = create_access_token(1, TEACHER, school_id=9)
+    r = client.get("/api/classes", headers={"Authorization": f"bearer {token}"})
+    assert r.status_code == 200
+    assert r.json()["role"] == TEACHER
+
+
+def test_scheme_only_or_whitespace_tolerant(client):
+    # 只有 scheme 没有 token
+    assert client.get(
+        "/api/classes", headers={"Authorization": "Bearer"}
+    ).status_code == 401
+    # 多空格分隔仍能提取 token（此处为垃圾 token，故 401 而非放行）
+    assert client.get(
+        "/api/classes", headers={"Authorization": "Bearer   garbage"}
+    ).status_code == 401
+
+
 def test_valid_signature_but_missing_claims_401(client):
     # 签名有效但缺 user_id/role 的畸形令牌：必须 401，不能漏成 500
     settings = get_settings()

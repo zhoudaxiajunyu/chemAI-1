@@ -41,11 +41,12 @@ class AuthMiddleware(BaseHTTPMiddleware):
             return await call_next(request)
 
         header = request.headers.get("Authorization", "")
-        if not header.startswith("Bearer "):
+        # RFC 7235 §2.1：auth-scheme 大小写不敏感，"bearer xxx" 必须与 "Bearer xxx" 等价
+        scheme, _, raw_token = header.partition(" ")
+        token = raw_token.strip()
+        if scheme.lower() != "bearer" or not token:
             logger.warning("认证拒绝: 缺失或格式错误的 Authorization 头 path=%s", path)
             return _unauthorized("缺少有效的认证令牌")
-
-        token = header[len("Bearer "):].strip()
         try:
             payload = decode_token(token, expected_type=TOKEN_TYPE_ACCESS)
             # 签名有效但声明缺失/畸形同样按未认证处理，不能让 KeyError 漏成 500
