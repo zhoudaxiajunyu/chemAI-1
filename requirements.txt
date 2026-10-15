@@ -23,6 +23,9 @@ pydantic-settings>=2.1.0,<3.0
 # --- 认证 ---
 python-jose[cryptography]>=3.3.0
 passlib[bcrypt]>=1.7.4
+# passlib 1.7.4 探测 bcrypt.__about__：该属性在 bcrypt 4.1 移除（仅 trapped version 告警），
+# 5.x 起为硬失败。钉 4.0.x 保证零告警且兼容；升级 passlib 后可放开。
+bcrypt>=4.0.1,<4.1
 
 # --- 向量库 ---
 chromadb>=0.4.22

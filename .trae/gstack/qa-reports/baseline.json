@@ -1,0 +1,63 @@
+{
+  "domain": "127.0.0.1:8000",
+  "target": "chemAI-1 FastAPI (phase-2/data-model)",
+  "date": "2026-10-15",
+  "depth": "standard",
+  "health_score": 94,
+  "health_score_before_fixes": 84,
+  "requests_sent": 174,
+  "server_exceptions": 0,
+  "http_500": 0,
+  "expected_status": {
+    "GET /health": 200,
+    "GET /docs": 200,
+    "GET /redoc": 200,
+    "GET /openapi.json": 200,
+    "GET /api/classes (no token)": 401,
+    "GET /api/parent/children (no token)": 401,
+    "GET /health (forged bearer)": 200,
+    "GET /api/classes (forged bearer)": 401,
+    "GET /api/classes (Basic scheme)": 401,
+    "GET /api/classes ('Bearer' no space)": 401,
+    "GET /api/classes (lowercase bearer, valid token)": 404,
+    "GET /api/classes (valid token)": 404,
+    "GET /api/parent/children (parent token)": 404,
+    "POST /api/auth/login (valid)": 200,
+    "POST /api/auth/login (wrong pw)": 401,
+    "POST /api/auth/login (unknown user)": 401,
+    "POST /api/auth/login (pending)": 401,
+    "POST /api/auth/login (rejected)": 401,
+    "POST /api/auth/login (role mismatch)": 401,
+    "POST /api/auth/login (sql injection user)": 401,
+    "POST /api/auth/login (10k char pw)": 422,
+    "POST /api/auth/login (extra field)": 422,
+    "POST /api/auth/login (missing field)": 422,
+    "POST /api/auth/login (empty strings)": 422,
+    "POST /api/auth/login (GET method)": 405,
+    "POST /api/auth/refresh (refresh token)": 200,
+    "POST /api/auth/refresh (access token)": 401,
+    "POST /api/auth/refresh (garbage)": 401,
+    "POST /api/auth/refresh (empty)": 422,
+    "POST /api/parent/login (valid)": 200,
+    "POST /api/parent/login (wrong pw)": 401,
+    "POST /api/parent/login (unknown phone)": 401
+  },
+  "token_claims": {
+    "access_ttl_seconds": 86400,
+    "refresh_ttl_seconds": 604800,
+    "teacher_has_school_id": true,
+    "parent_has_school_id": false
+  },
+  "performance_ms": {
+    "login_bcrypt_median": 202,
+    "health_median": 13.8
+  },
+  "issues": [
+    {"id": "ISSUE-001", "severity": "medium", "title": "Bearer scheme case-sensitive", "status": "verified"},
+    {"id": "ISSUE-002", "severity": "medium", "title": "OpenAPI missing Bearer securityScheme", "status": "verified"},
+    {"id": "ISSUE-003", "severity": "medium", "title": "unbounded request fields + silent extra fields", "status": "verified"},
+    {"id": "ISSUE-004", "severity": "low", "title": "401 missing WWW-Authenticate", "status": "deferred"},
+    {"id": "ISSUE-006", "severity": "low", "title": "refresh token reuse (no rotation)", "status": "accepted-scope"},
+    {"id": "ISSUE-007", "severity": "info", "title": "no e2e evidence for RBAC 403 / binding 403", "status": "scope-gap"}
+  ]
+}
