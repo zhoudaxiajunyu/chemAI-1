@@ -243,3 +243,11 @@ def test_real_app_middleware_health_docs_and_protection(ctx):
     assert client.get("/openapi.json").status_code == 200
     # 未携带令牌访问受保护路径，中间件先于路由返回 401
     assert client.get("/api/classes").status_code == 401
+
+
+def test_openapi_declares_bearer_security_scheme(ctx):
+    client, _ = ctx
+    spec = client.get("/openapi.json").json()
+    assert spec["components"]["securitySchemes"]["BearerAuth"] == {
+        "type": "http", "scheme": "bearer", "bearerFormat": "JWT",
+    }
