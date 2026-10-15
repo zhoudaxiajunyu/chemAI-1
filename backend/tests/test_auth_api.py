@@ -245,6 +245,27 @@ def test_real_app_middleware_health_docs_and_protection(ctx):
     assert client.get("/api/classes").status_code == 401
 
 
+def test_login_rejects_unknown_fields_and_oversized_input(ctx):
+    client, Session = ctx
+    with Session() as s:
+        _seed_teacher(s, username="t_strict", password="pw123456")
+
+    # 未知字段不再被静默忽略
+    r_extra = client.post("/api/auth/login", json={
+        "username": "t_strict", "password": "pw123456",
+        "role": "teacher", "is_admin": True,
+    })
+    assert r_extra.status_code == 422
+
+    # 无界输入被拒绝（用户名 / 密码上界）
+    assert client.post("/api/auth/login", json={
+        "username": "u" * 151, "password": "pw123456", "role": "teacher",
+    }).status_code == 422
+    assert client.post("/api/auth/login", json={
+        "username": "t_strict", "password": "p" * 129, "role": "teacher",
+    }).status_code == 422
+
+
 def test_openapi_declares_bearer_security_scheme(ctx):
     client, _ = ctx
     spec = client.get("/openapi.json").json()
