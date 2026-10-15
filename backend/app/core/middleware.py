@@ -48,13 +48,15 @@ class AuthMiddleware(BaseHTTPMiddleware):
         token = header[len("Bearer "):].strip()
         try:
             payload = decode_token(token, expected_type=TOKEN_TYPE_ACCESS)
-        except TokenValidationError as exc:
+            # 签名有效但声明缺失/畸形同样按未认证处理，不能让 KeyError 漏成 500
+            user = UserContext(
+                user_id=int(payload["user_id"]),
+                role=payload["role"],
+                school_id=payload.get("school_id"),
+            )
+        except (TokenValidationError, KeyError, TypeError, ValueError) as exc:
             logger.warning("认证拒绝: 令牌校验失败 path=%s reason=%s", path, exc)
             return _unauthorized("认证令牌无效或已过期")
 
-        request.state.user = UserContext(
-            user_id=int(payload["user_id"]),
-            role=payload["role"],
-            school_id=payload.get("school_id"),
-        )
+        request.state.user = user
         return await call_next(request)

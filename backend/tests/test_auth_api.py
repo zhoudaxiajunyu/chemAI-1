@@ -115,6 +115,17 @@ def test_login_pending_teacher_401(ctx):
     assert r.status_code == 401
 
 
+def test_login_rejected_teacher_401(ctx):
+    client, Session = ctx
+    with Session() as s:
+        _seed_teacher(s, username="rejected01", status=ApprovalStatus.REJECTED)
+
+    r = client.post("/api/auth/login", json={
+        "username": "rejected01", "password": "pw123456", "role": "teacher"
+    })
+    assert r.status_code == 401
+
+
 def test_login_role_mismatch_401(ctx):
     client, Session = ctx
     with Session() as s:

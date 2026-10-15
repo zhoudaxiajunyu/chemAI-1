@@ -66,7 +66,7 @@ def test_upgrade_downgrade_roundtrip(alembic_cfg, tmp_path):
     command.upgrade(alembic_cfg, "head")
     assert len(_table_names(db_file) - {"alembic_version"}) == 24
 
-    # 5) 迁移建出的库上，裸 SQL 写入非法枚举值同样被 CHECK 拒绝
+    # 5) 裸 SQL 写入非法枚举值同样被 CHECK 拒绝
     engine = create_engine(f"sqlite:///{db_file.as_posix()}")
     with engine.connect() as conn:
         with pytest.raises(IntegrityError, match="ck_questions_question_difficulty"):
@@ -75,3 +75,16 @@ def test_upgrade_downgrade_roundtrip(alembic_cfg, tmp_path):
             ))
             conn.commit()
     engine.dispose()
+
+
+def test_injected_url_beats_database_url_env(alembic_cfg, tmp_path, monkeypatch):
+    """env.py 优先级：Config 显式注入的真实 URL 必须压过 DATABASE_URL 环境变量。"""
+    db_file = tmp_path / "injected.db"
+    alembic_cfg.set_main_option("sqlalchemy.url", f"sqlite:///{db_file.as_posix()}")
+    # 指向一个不存在的库名；若 env 错误地采用环境变量，upgrade 会在此路径建库
+    monkeypatch.setenv("DATABASE_URL", "sqlite:///./env_url_should_not_win.db")
+
+    command.upgrade(alembic_cfg, "head")
+
+    assert len(_table_names(db_file) - {"alembic_version"}) == 24
+    assert not (PROJECT_ROOT / "env_url_should_not_win.db").exists()

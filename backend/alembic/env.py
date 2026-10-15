@@ -23,13 +23,15 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# URL 优先级：显式注入（测试/编程式 Config）> 环境变量 DATABASE_URL > .env/默认值 > ini 占位
+# URL 优先级：显式注入（测试/编程式 Config 传入的真实 URL）> 环境变量 DATABASE_URL
+# > .env/默认值；alembic.ini 的 driver:// 占位一律视为"未设置"。
 _current_url = config.get_main_option("sqlalchemy.url")
+_injected = bool(_current_url) and not _current_url.startswith("driver://")
 _env_url = os.environ.get("DATABASE_URL")
-if _env_url:
-    config.set_main_option("sqlalchemy.url", _env_url)
-elif not _current_url or _current_url.startswith("driver://"):
-    config.set_main_option("sqlalchemy.url", get_settings().database_url)
+if not _injected:
+    config.set_main_option(
+        "sqlalchemy.url", _env_url or get_settings().database_url
+    )
 
 target_metadata = Base.metadata
 

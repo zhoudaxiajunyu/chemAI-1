@@ -85,3 +85,16 @@ def test_tampered_token_401(client):
     tampered = token[:-4] + ("xxxx" if not token.endswith("xxxx") else "yyyy")
     r = client.get("/api/classes", headers={"Authorization": f"Bearer {tampered}"})
     assert r.status_code == 401
+
+
+def test_valid_signature_but_missing_claims_401(client):
+    # 签名有效但缺 user_id/role 的畸形令牌：必须 401，不能漏成 500
+    settings = get_settings()
+    now = datetime.now(timezone.utc)
+    malformed = jose_jwt.encode(
+        {"sub": "1", "type": "access", "iat": now,
+         "exp": now + timedelta(minutes=5)},
+        settings.jwt_secret_key, algorithm=settings.jwt_algorithm,
+    )
+    r = client.get("/api/classes", headers={"Authorization": f"Bearer {malformed}"})
+    assert r.status_code == 401
