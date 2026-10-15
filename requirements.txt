@@ -23,6 +23,8 @@ pydantic-settings>=2.1.0,<3.0
 # --- 认证 ---
 python-jose[cryptography]>=3.3.0
 passlib[bcrypt]>=1.7.4
+# passlib 1.7.4 与 bcrypt 5.x 不兼容（__about__ 移除致检测硬失败），钉 4.x
+bcrypt>=4.0.1,<5.0
 
 # --- 向量库 ---
 chromadb>=0.4.22
